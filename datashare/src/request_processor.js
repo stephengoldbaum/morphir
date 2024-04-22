@@ -7,7 +7,7 @@ const { log } = require('console');
 
 const baseDirArg = process.argv.includes('--baseDir') 
   ? process.argv[process.argv.indexOf('--baseDir') + 1] 
-  : 'data/';
+  : 'metastore';
 
 const baseDir = path.resolve(process.cwd(), baseDirArg);
 log("Using base folder: " + baseDir);

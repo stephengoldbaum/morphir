@@ -6,24 +6,55 @@ const fs = require('fs');
 const path = require('path');
 const { log } = require("console");
 
-const baseDirArg = process.argv.includes('--baseDir') 
+module.exports = { runGraphQL };
+
+var baseDir;
+runGraphQL();
+
+function runGraphQL() {
+  // Setup
+  const baseDirArg = process.argv.includes('--baseDir') 
   ? process.argv[process.argv.indexOf('--baseDir') + 1] 
-  : 'data/';
+  : 'metastore';
 
-const baseDir = path.resolve(process.cwd(), baseDirArg);
-log("Using base folder: " + baseDir);
+  baseDir = path.resolve(process.cwd(), baseDirArg);
+  log("Using base folder: " + baseDir);
 
-// Define the GraphQL schema
-const schemaFile = fs.readFileSync(path.join(__dirname, 'Data.schema.graphql'), 'utf8');
-const schema = buildSchema(schemaFile);
+  // Define the GraphQL schema
+  const schemaFile = fs.readFileSync(path.join(__dirname, 'Data.schema.graphql'), 'utf8');
+  const schema = buildSchema(schemaFile);
 
-//Implement the resolvers
-const root = {
-  dataset: ({ id }) => { return dataset(id); },
-  datasets: () => { return datasets(); },
-  element: ({ id }) => { return element(id); },
-  elements: () => { datasets(); }, // TODO
-};
+  //Implement the resolvers
+  const root = {
+    dataset: ({ id }) => { return dataset(id); },
+    datasets: () => { return datasets(); },
+    element: ({ id }) => { return element(id); },
+    elements: () => { datasets(); }, // TODO
+  };
+
+  // Create an express server and a GraphQL endpoint
+  var app = express()
+
+  // Create and use the GraphQL handler.
+  app.all(
+    "/graphql",
+    createHandler({
+      schema: schema,
+      rootValue: root
+      // rootValue: resolvers
+    })
+  )
+
+  // Serve the GraphiQL IDE.
+  app.get("/", (_req, res) => {
+    res.type("html")
+    res.end(ruruHTML({ endpoint: "/graphql" }))
+  })
+
+  // Start the server at port
+  app.listen(4000)
+  console.log("Running a GraphQL API server at http://localhost:4000/graphql")
+}
 
 function recursiveSearch(dir, pattern) {
   let results = [];
@@ -185,26 +216,3 @@ function inflate(file) {
     return undefined;
   }
 }
-
-// Create an express server and a GraphQL endpoint
-var app = express()
-
-// Create and use the GraphQL handler.
-app.all(
-  "/graphql",
-  createHandler({
-    schema: schema,
-    rootValue: root
-    // rootValue: resolvers
-  })
-)
-
-// Serve the GraphiQL IDE.
-app.get("/", (_req, res) => {
-  res.type("html")
-  res.end(ruruHTML({ endpoint: "/graphql" }))
-})
-
-// Start the server at port
-app.listen(4000)
-console.log("Running a GraphQL API server at http://localhost:4000/graphql")
