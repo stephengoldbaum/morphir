@@ -1,3 +1,10 @@
+/**
+ * @fileoverview This file contains the implementation of a GraphQL server using Express.
+ * It defines the GraphQL schema, implements the resolvers, and creates an Express server with a GraphQL endpoint.
+ * The server also serves the GraphiQL IDE and listens on port 4000.
+ * Additionally, it includes helper functions for recursive search, converting URNs to file paths, and inflating datasets and elements.
+ * @module graphql_server
+ */
 var express = require("express")
 var { createHandler } = require("graphql-http/lib/use/express")
 var { buildSchema } = require("graphql")
@@ -11,6 +18,9 @@ module.exports = { runGraphQL };
 var baseDir;
 runGraphQL();
 
+/**
+ * Runs the GraphQL server.
+ */
 function runGraphQL() {
   // Setup
   const baseDirArg = process.argv.includes('--baseDir') 
@@ -56,6 +66,13 @@ function runGraphQL() {
   console.log("Running a GraphQL API server at http://localhost:4000/graphql")
 }
 
+/**
+ * Recursively searches a directory for files matching a specific pattern.
+ * 
+ * @param {string} dir - The directory to search.
+ * @param {string} pattern - The file pattern to match.
+ * @returns {string[]} - An array of file paths matching the pattern.
+ */
 function recursiveSearch(dir, pattern) {
   let results = [];
 
@@ -76,6 +93,12 @@ function urnToFile(urn) {
   return urnToFile(urn, undefined);
 }
 
+/**
+ * Converts a URN (Uniform Resource Name) to a file path.
+ * @param {string} urn - The URN to convert.
+ * @param {string} [typ] - The file type extension. If not provided, it will be extracted from the URN.
+ * @returns {string} The file path corresponding to the URN.
+ */
 function urnToFile(urn, typ) {
   const items = urn.split(':');
 
@@ -102,6 +125,11 @@ function datasets() {
   return datasets;
 }
 
+/**
+ * Inflates the dataset by resolving field overrides and inflating field elements.
+ * @param {object} dataset - The dataset to be inflated.
+ * @returns {object} - The inflated dataset.
+ */
 function inflateDataset(dataset) {
   const fields = dataset.fields.map(field => {
     const fieldUrn = `${dataset.id}#${field.name}`.replace("dataset:", ":");

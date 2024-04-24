@@ -66,7 +66,7 @@ function saveToFile(artifact, callback) {
   const typ = items[0];
   const domain = items[1];
   const name = items[2];
-  const folder = `${basedir}/${domain}`;
+  const folder = `${baseDir}/${domain}`;
   const fileName = folder + `/${name}.${typ}.json`;
   const json = JSON.stringify(artifact);
 
