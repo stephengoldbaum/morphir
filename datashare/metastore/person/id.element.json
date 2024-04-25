@@ -1,6 +1,6 @@
 {
     "id": "element:person:id",
-    "name": "ID",
+    "name": "Identifier",
     "description": "The identifier of a person",
     "element_type": {
         "Text": {
