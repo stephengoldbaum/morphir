@@ -8,6 +8,8 @@
 var express = require("express")
 var { createHandler } = require("graphql-http/lib/use/express")
 var { buildSchema } = require("graphql")
+const { mergeTypeDefs } = require('@graphql-tools/merge');
+const { makeExecutableSchema } = require("@graphql-tools/schema");
 var { ruruHTML } = require("ruru/server")
 const fs = require('fs');
 const path = require('path');
@@ -31,29 +33,45 @@ function runGraphQL() {
   log("Using base folder: " + baseDir);
 
   // Define the GraphQL schema
-  const schemaFile = fs.readFileSync(path.join(__dirname, 'Data.schema.graphql'), 'utf8');
-  const schema = buildSchema(schemaFile);
+  const elementSchemaFile = fs.readFileSync(path.join(path.join(__dirname, 'DataThread'), 'Element.schema.graphql'), 'utf8');
+  const datasetSchemaFile = fs.readFileSync(path.join(path.join(__dirname, 'DataThread'), 'Dataset.schema.graphql'), 'utf8');
+  const querySchemaFile = fs.readFileSync(path.join(__dirname, 'DataThread.schema.graphql'), 'utf8');
+  // const schema = mergeTypeDefs([elementSchemaFile, datasetSchemaFile, querySchemaFile]);
+  // const schema = buildSchema(schemaFile);
 
   //Implement the resolvers
-  const root = {
-    dataset: ({ id }) => { return dataset(id); },
-    datasets: () => { return datasets(); },
-    element: ({ id }) => { return element(id); },
-    elements: () => { datasets(); }, // TODO
+  // const root = {
+  //   dataset: ({ id }) => { return dataset(id); },
+  //   datasets: () => { return datasets(); },
+  //   element: ({ id }) => { return element(id); },
+  //   elements: () => { datasets(); }, // TODO
+  // };
+  const resolvers = {
+    Query: {
+      dataset: ({ id }) => { return dataset(id); },
+      datasets: () => { return datasets(); },
+      element: ({ id }) => { return element(id); },
+      elements: () => { datasets(); },
+    }
   };
 
+  const schema = makeExecutableSchema({
+    typeDefs: [elementSchemaFile, datasetSchemaFile, querySchemaFile],
+    resolvers: resolvers
+  });
+  
   // Create an express server and a GraphQL endpoint
-  var app = express()
+  var app = express();
 
   // Create and use the GraphQL handler.
   app.all(
     "/graphql",
     createHandler({
       schema: schema,
-      rootValue: root
-      // rootValue: resolvers
+      rootValue: resolvers
     })
   )
+
 
   // Serve the GraphiQL IDE.
   app.get("/", (_req, res) => {

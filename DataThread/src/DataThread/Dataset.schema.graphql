@@ -1,0 +1,14 @@
+type Dataset {
+  id: ID!
+  name: String!
+  version: Int!
+  fields: [Field!]!
+}
+
+type Field {
+  name: String!
+  element: Element!
+  optional: Boolean
+  key: Boolean
+}
+

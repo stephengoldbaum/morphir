@@ -1,4 +1,4 @@
-# Data Sharing
+# Data Thread
 This project provides a specification for sharing datasets across systems.  It defines:
 
 * A core API for defining datasets and elements via a JSON Schema.

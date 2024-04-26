@@ -1,10 +1,8 @@
-module Data exposing (..) 
+module DataThread.Element exposing (..)
 
-type alias URI = String
+import DataThread.ID exposing (ID)
 
-type alias ID = URI
 
----- Elements ----
 type alias ElementID = ID
 
 type ElementType
@@ -50,23 +48,3 @@ type alias ElementInfo =
     }
 
 type alias Elements = List Element
-
----- Datasets ----
-
-type alias DatasetID = ID
-
-type alias FieldName = String
-
-type alias Field = 
-    { name : FieldName
-    , element : ElementID
-    , optional : Maybe Bool
-    , key : Maybe Bool
-    }
-
-type alias Dataset = 
-    { id : DatasetID
-    , name : String
-    , version: Int
-    , fields : List Field
-    }
