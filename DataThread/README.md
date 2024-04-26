@@ -38,6 +38,13 @@ An example can be found in the [metastore folder](metastore). Some things to loo
 * Clone the project
 * Ensure `node` and `npm` are installed.
 * Run `npm install`
+
+#### People example
+  * `node src/request_processor.js` --baseDir example/metastore
+  * Open a browser to the written link.
+  * Execute any of the [sample queries](example_graphql_queries.json).
+
+#### Clean example
 * Run the Request Process
   * `node src/request_processor.js` --baseDir data
   * `curl -X POST -H "Content-Type: application/json" -d @test.foo.element.json http://localhost:3000/element`
