@@ -47,8 +47,8 @@ An example can be found in the [metastore folder](metastore). Some things to loo
 #### Clean example
 * Run the Request Process
   * `node src/request_processor.js` --baseDir data
-  * `curl -X POST -H "Content-Type: application/json" -d @test.foo.element.json http://localhost:3000/element`
-  * `curl -X POST -H "Content-Type: application/json" -d @test.foo.dataset.json http://localhost:3000/dataset`
+  * `curl -X POST -H "Content-Type: application/json" -d @example/test.foo.element.json http://localhost:3000/element`
+  * `curl -X POST -H "Content-Type: application/json" -d @example/test.foo.dataset.json http://localhost:3000/dataset`
 * Run Query Processor
   * `node src/graphql_server.js` --baseDir data
   * Open a browser to the written link.
