@@ -30,6 +30,34 @@ app.post('/dataset', (req, res) => {
   processRequest(body, 'dataset', req, res);
 });
 
+app.post('/element', (req, res) => {
+  // Extract the data from the request
+  const { requestId, domain, element } = req.body;
+
+  processRequest(element, 'element', req, res);
+
+  // Send a response
+  res.json({
+    requestId,
+    domain,
+    element,
+  });
+});
+
+app.post('/dataset', (req, res) => {
+  // Extract the data from the request
+  const { requestId, domain, dataset } = req.body;
+
+  processRequest(dataset, 'dataset', req, res);
+
+  // Send a response
+  res.json({
+    requestId,
+    domain,
+    dataset,
+  });
+});
+
 function processRequest(body, artifactType, req, res) {
   // Validate the element against the Data.schema.json schema
   // You can use a JSON schema validator library like Ajv for this
@@ -39,20 +67,14 @@ function processRequest(body, artifactType, req, res) {
       console.error(err);
 
       const event = {
-        "not_created": {
-          "type" : artifactType,
-          "element" : body
-        }
+        "RequestFailed": body
       };
 
       res.status(500).send(JSON.stringify(event));
     } else {
 
       const event = {
-        "created": {
-          "type" : artifactType,
-          "element" : body
-        }
+        "Created": body
       };
 
       res.status(201).send(JSON.stringify(event));
@@ -64,15 +86,25 @@ function saveToFile(artifact, callback) {
   // Save as a JSON file in the data folder
   const items = artifact.id.split(':');
   const typ = items[0];
-  const domain = items[1];
+  const domain = items[1].startsWith('/') ? items[1].slice(1) : items[1];
   const name = items[2];
-  const folder = `${baseDir}/${domain}`;
-  const fileName = folder + `/${name}.${typ}.json`;
-  const json = JSON.stringify(artifact);
 
-  if(!fs.existsSync(folder)) {
-    fs.mkdirSync(folder);
-  }
+  // Split the domain into an array of folder names
+  const folders = domain.split('/');
+
+  // Create each folder if it doesn't already exist
+  folders.reduce((folderPath, folder) => {
+    const currentPath = path.join(folderPath, folder);
+    if (!fs.existsSync(currentPath)) {
+      fs.mkdirSync(currentPath);
+    }
+    return currentPath;
+  }, baseDir);
+
+  const folder = path.join(baseDir, ...folders);
+  const fileName = path.join(folder, `${name}.${typ}.json`);
+  log(fileName)
+  const json = JSON.stringify(artifact);
 
   fs.writeFile(fileName, json, callback);
 }

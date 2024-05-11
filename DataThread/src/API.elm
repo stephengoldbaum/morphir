@@ -37,6 +37,12 @@ type alias CreateDatasetCommand =
     , dataset : Dataset
     }
 
+type alias DatasetCreated =
+    { requestId: ID
+    , domain: Domain
+    , dataset : Dataset
+    }
+
 createDataset : CreateDatasetCommand -> Cmd Msg
 -- updateDataset : Dataset -> Cmd Msg
 -- deleteDataset : DatasetID -> Cmd Msg

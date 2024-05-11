@@ -1,7 +1,7 @@
-module DataThread.Dataset exposing (..) 
+module DataThread.Grammer.Dataset exposing (..) 
 
-import DataThread.ID exposing (ID)
-import DataThread.Element exposing (ElementID)
+import DataThread.Grammer.ID exposing (ID)
+import DataThread.Grammer.Element exposing (ElementID)
 
 
 type alias DatasetID = ID

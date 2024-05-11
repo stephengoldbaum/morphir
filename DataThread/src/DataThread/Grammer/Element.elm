@@ -1,4 +1,4 @@
-module DataThread.Element exposing (..)
+module DataThread.Grammer.Element exposing (..)
 
 import DataThread.ID exposing (ID)
 

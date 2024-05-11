@@ -1,0 +1,166 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "DataThread API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/createElement": {
+      "post": {
+        "summary": "Create a new element",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateElement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Element created",
+            "content": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDatasetCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dataset created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetCreated"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/createDataset": {
+      "post": {
+        "summary": "Create a new dataset",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDatasetCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dataset created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetCreated"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ID": {
+        "type": "string"
+      },
+      "Domain": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "Element": {
+        "type": "object",
+        "properties": {}
+      },
+      "Dataset": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateElement": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "domain": {
+            "$ref": "#/components/schemas/Domain"
+          },
+          "element": {
+            "$ref": "#/components/schemas/Element"
+          }
+        },
+        "required": [
+          "requestId",
+          "domain",
+          "element"
+        ]
+      },
+      "ElementCreated": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "domain": {
+            "$ref": "#/components/schemas/Domain"
+          },
+          "element": {
+            "$ref": "#/components/schemas/Element"
+          }
+        },
+        "required": [
+          "requestId",
+          "domain",
+          "element"
+        ]
+      },
+      "CreateDatasetCommand": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "$ref": "#/components/schemas/ID"
+          },
+          "domain": {
+            "$ref": "#/components/schemas/Domain"
+          },
+          "dataset": {
+            "$ref": "#/components/schemas/Dataset"
+          }
+        },
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/ElementCreated"
+          }
+        }
+      },
+    },
+    "DatasetCreated": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "$ref": "#/components/schemas/ID"
+        },
+        "domain": {
+          "$ref": "#/components/schemas/Domain"
+        },
+        "dataset": {
+          "$ref": "#/components/schemas/Dataset"
+        }
+      },
+      "required": ["requestId", "domain", "dataset"]
+    }
+  }
+}
