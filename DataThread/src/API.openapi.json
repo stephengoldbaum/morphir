@@ -5,7 +5,7 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/createElement": {
+    "/element": {
       "post": {
         "summary": "Create a new element",
         "requestBody": {
@@ -42,7 +42,7 @@
         }
       }
     },
-    "/createDataset": {
+    "/dataset": {
       "post": {
         "summary": "Create a new dataset",
         "requestBody": {

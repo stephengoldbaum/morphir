@@ -3,7 +3,7 @@ info:
   title: DataThread API
   version: 1.0.0
 paths:
-  /createElement:
+  /element:
     post:
       summary: Create a new element
       requestBody:
@@ -19,7 +19,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ElementCreated'
-  /createDataset:
+  /dataset:
     post:
       summary: Create a new dataset
       requestBody:

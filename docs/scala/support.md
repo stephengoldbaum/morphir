@@ -41,11 +41,11 @@ This section lists the SDK types and functions currently supported in this versi
 | Function           | Morphir-Elm Version Introduced | Supported |
 |--------------------|--------------------------------|-----------|
 | lessThan           | v2.0.0                         | &#x2713;  |
-| greaterThan        | v2.0.0                         | &#x2715;  |
-| lessThanOrEqual    | v2.0.0                         | &#x2715;  |
-| greaterThanOrEqual | v2.0.0                         | &#x2715;  |
-| max                | v2.0.0                         | &#x2715;  |
-| min                | v2.0.0                         | &#x2715;  |
+| greaterThan        | v2.0.0                         | &#x2713;  |
+| lessThanOrEqual    | v2.0.0                         | &#x2713;  |
+| greaterThanOrEqual | v2.0.0                         | &#x2713;  |
+| max                | v2.0.0                         | &#x2713;  |
+| min                | v2.0.0                         | &#x2713;  |
 | compare            | v2.0.0                         | &#x2713;  |
 
 #### Float
@@ -56,28 +56,28 @@ This section lists the SDK types and functions currently supported in this versi
 | floor              | v0.4.0                         | &#x2715;  |
 | ceiling            | v0.4.0                         | &#x2715;  |
 | truncate           | v0.4.0                         | &#x2715;  |
-| isNan              | v0.4.0                         | &#x2715;  |
-| isInfinite         | v0.4.0                         | &#x2715;  |
+| isNan              | v0.4.0                         | &#x2713;  |
+| isInfinite         | v0.4.0                         | &#x2713;  |
 | e                  | v0.4.0                         | &#x2713;  |
 | pi                 | v0.4.0                         | &#x2713;  |
-| cos                | v0.4.0                         | &#x2715;  |
-| sin                | v0.4.0                         | &#x2715;  |
-| tan                | v0.4.0                         | &#x2715;  |
-| acos               | v0.4.0                         | &#x2715;  |
-| asin               | v0.4.0                         | &#x2715;  |
-| atan               | v0.4.0                         | &#x2715;  |
-| atan2              | v0.4.0                         | &#x2715;  |
-| degrees            | v2.0.0                         | &#x2715;  | 
-| radians            | v2.0.0                         | &#x2715;  | 
-| turns              | v2.0.0                         | &#x2715;  | 
+| cos                | v0.4.0                         | &#x2713;  |
+| sin                | v0.4.0                         | &#x2713;  |
+| tan                | v0.4.0                         | &#x2713;  |
+| acos               | v0.4.0                         | &#x2713;  |
+| asin               | v0.4.0                         | &#x2713;  |
+| atan               | v0.4.0                         | &#x2713;  |
+| atan2              | v0.4.0                         | &#x2713;  |
+| degrees            | v2.0.0                         | &#x2713;  | 
+| radians            | v2.0.0                         | &#x2713;  | 
+| turns              | v2.0.0                         | &#x2713;  | 
 | toPolar            | v2.0.0                         | &#x2715;  | 
 | fromPolar          | v2.0.0                         | &#x2715;  | 
 | lessThan           | v2.0.0                         | &#x2713;  |
-| greaterThan        | v2.0.0                         | &#x2715;  |
-| lessThanOrEqual    | v2.0.0                         | &#x2715;  |
-| greaterThanOrEqual | v2.0.0                         | &#x2715;  |
-| max                | v2.0.0                         | &#x2715;  |
-| min                | v2.0.0                         | &#x2715;  |
+| greaterThan        | v2.0.0                         | &#x2713;  |
+| lessThanOrEqual    | v2.0.0                         | &#x2713;  |
+| greaterThanOrEqual | v2.0.0                         | &#x2713;  |
+| max                | v2.0.0                         | &#x2713;  |
+| min                | v2.0.0                         | &#x2713;  |
 | compare            | v2.0.0                         | &#x2713;  |
 
 #### Int
@@ -91,8 +91,8 @@ This section lists the SDK types and functions currently supported in this versi
 | greaterThan        | v2.0.0                         | &#x2713;  |
 | lessThanOrEqual    | v2.0.0                         | &#x2713;  |
 | greaterThanOrEqual | v2.0.0                         | &#x2713;  |
-| max                | v2.0.0                         | &#x2715;  |
-| min                | v2.0.0                         | &#x2715;  |
+| max                | v2.0.0                         | &#x2713;  |
+| min                | v2.0.0                         | &#x2713;  |
 | compare            | v2.0.0                         | &#x2713;  |
 
 #### List
@@ -100,11 +100,11 @@ This section lists the SDK types and functions currently supported in this versi
 |--------------------|--------------------------------|-----------|
 | append             | v2.0.0                         | &#x2713;  |
 | lessThan           | v2.0.0                         | &#x2713;  |
-| greaterThan        | v2.0.0                         | &#x2715;  |
-| lessThanOrEqual    | v2.0.0                         | &#x2715;  |
-| greaterThanOrEqual | v2.0.0                         | &#x2715;  |
-| max                | v2.0.0                         | &#x2715;  |
-| min                | v2.0.0                         | &#x2715;  |
+| greaterThan        | v2.0.0                         | &#x2713;  |
+| lessThanOrEqual    | v2.0.0                         | &#x2713;  |
+| greaterThanOrEqual | v2.0.0                         | &#x2713;  |
+| max                | v2.0.0                         | &#x2713;  |
+| min                | v2.0.0                         | &#x2713;  |
 | compare            | v2.0.0                         | &#x2713;  |
 
 #### Number
@@ -124,22 +124,22 @@ This section lists the SDK types and functions currently supported in this versi
 |--------------------|--------------------------------|-----------|
 | append             | v2.0.0                         | &#x2715;  |
 | lessThan           | v2.0.0                         | &#x2713;  |
-| greaterThan        | v2.0.0                         | &#x2715;  |
-| lessThanOrEqual    | v2.0.0                         | &#x2715;  |
-| greaterThanOrEqual | v2.0.0                         | &#x2715;  |
-| max                | v2.0.0                         | &#x2715;  |
-| min                | v2.0.0                         | &#x2715;  |
+| greaterThan        | v2.0.0                         | &#x2713;  |
+| lessThanOrEqual    | v2.0.0                         | &#x2713;  |
+| greaterThanOrEqual | v2.0.0                         | &#x2713;  |
+| max                | v2.0.0                         | &#x2713;  |
+| min                | v2.0.0                         | &#x2713;  |
 | compare            | v2.0.0                         | &#x2713;  |
 
 #### Tuple
 | Function           | Morphir-Elm Version Introduced | Supported |
 |--------------------|--------------------------------|-----------|
 | lessThan           | v2.0.0                         | &#x2713;  |
-| greaterThan        | v2.0.0                         | &#x2715;  |
-| lessThanOrEqual    | v2.0.0                         | &#x2715;  |
-| greaterThanOrEqual | v2.0.0                         | &#x2715;  |
-| max                | v2.0.0                         | &#x2715;  |
-| min                | v2.0.0                         | &#x2715;  |
+| greaterThan        | v2.0.0                         | &#x2713;  |
+| lessThanOrEqual    | v2.0.0                         | &#x2713;  |
+| greaterThanOrEqual | v2.0.0                         | &#x2713;  |
+| max                | v2.0.0                         | &#x2713;  |
+| min                | v2.0.0                         | &#x2713;  |
 | compare            | v2.0.0                         | &#x2713;  |
 
 
@@ -266,18 +266,18 @@ This section lists the SDK types and functions currently supported in this versi
 | logBase    | v0.4.0                         | &#x2713;  |
 | e          | v0.4.0                         | &#x2713;  |
 | pi         | v0.4.0                         | &#x2713;  |
-| cos        | v0.4.0                         | &#x2715;  |
-| sin        | v0.4.0                         | &#x2715;  |
-| tan        | v0.4.0                         | &#x2715;  |
-| acos       | v0.4.0                         | &#x2715;  |
-| asin       | v0.4.0                         | &#x2715;  |
-| atan       | v0.4.0                         | &#x2715;  |
-| atan2      | v0.4.0                         | &#x2715;  |
-| isNan      | v0.4.0                         | &#x2715;  |
-| isInfinite | v0.4.0                         | &#x2715;  |
-| degrees    | v2.0.0                         | &#x2715;  | 
-| radians    | v2.0.0                         | &#x2715;  | 
-| turns      | v2.0.0                         | &#x2715;  | 
+| cos        | v0.4.0                         | &#x2713;  |
+| sin        | v0.4.0                         | &#x2713;  |
+| tan        | v0.4.0                         | &#x2713;  |
+| acos       | v0.4.0                         | &#x2713;  |
+| asin       | v0.4.0                         | &#x2713;  |
+| atan       | v0.4.0                         | &#x2713;  |
+| atan2      | v0.4.0                         | &#x2713;  |
+| isNan      | v0.4.0                         | &#x2713;  |
+| isInfinite | v0.4.0                         | &#x2713;  |
+| degrees    | v2.0.0                         | &#x2713;  | 
+| radians    | v2.0.0                         | &#x2713;  | 
+| turns      | v2.0.0                         | &#x2713;  | 
 | toPolar    | v2.0.0                         | &#x2715;  | 
 | fromPolar  | v2.0.0                         | &#x2715;  | 
 
@@ -541,7 +541,7 @@ This section lists the SDK types and functions currently supported in this versi
 | partition | v2.2.0                         | &#x2713;  |
 | union     | v2.2.0                         | &#x2713;  |
 | intersect | v2.2.0                         | &#x2713;  |
-| diff      | v2.2.0                         | &#x2715;  |
+| diff      | v2.2.0                         | &#x2713;  |
 
 
 ### Morphir.SDK.StatefulApp
@@ -581,25 +581,25 @@ This section lists the SDK types and functions currently supported in this versi
 | fromInt            | v2.0.0                         | &#x2713;  |
 | toFloat            | v2.0.0                         | &#x2713;  |
 | fromFloat          | v2.0.0                         | &#x2713;  |
-| fromChar           | v2.0.0                         | &#x2715;  |
-| cons               | v2.0.0                         | &#x2715;  |
-| uncons             | v2.0.0                         | &#x2715;  |
-| toList             | v2.0.0                         | &#x2715;  |
-| fromList           | v2.0.0                         | &#x2715;  |
+| fromChar           | v2.0.0                         | &#x2713;  |
+| cons               | v2.0.0                         | &#x2713;  |
+| uncons             | v2.0.0                         | &#x2713;  |
+| toList             | v2.0.0                         | &#x2713;  |
+| fromList           | v2.0.0                         | &#x2713;  |
 | toUpper            | v2.0.0                         | &#x2713;  |
 | toLower            | v2.0.0                         | &#x2713;  |
-| pad                | v2.0.0                         | &#x2715;  |
+| pad                | v2.0.0                         | &#x2713;  |
 | padLeft            | v2.0.0                         | &#x2713;  |
 | padRight           | v2.0.0                         | &#x2713;  |
 | trim               | v2.0.0                         | &#x2713;  |
 | trimLeft           | v2.0.0                         | &#x2713;  |
 | trimRight          | v2.0.0                         | &#x2713;  |
-| map                | v2.0.0                         | &#x2715;  |
-| filter             | v2.0.0                         | &#x2715;  |
-| foldl              | v2.0.0                         | &#x2715;  |
-| foldr              | v2.0.0                         | &#x2715;  |
-| any                | v2.0.0                         | &#x2715;  |
-| all                | v2.0.0                         | &#x2715;  |
+| map                | v2.0.0                         | &#x2713;  |
+| filter             | v2.0.0                         | &#x2713;  |
+| foldl              | v2.0.0                         | &#x2713;  |
+| foldr              | v2.0.0                         | &#x2713;  |
+| any                | v2.0.0                         | &#x2713;  |
+| all                | v2.0.0                         | &#x2713;  |
 
 
 ### Morphir.SDK.Validate
