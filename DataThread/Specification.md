@@ -110,7 +110,7 @@ The `ElementInfo` structure provides additional information about an element:
 ### Metadata Augmentation
 Datasets and Elements can be augmented with new Metadata Sets at any time or place by linking the augmenting to the augmented through the augmented's Identifier URI. The Specification requires that MetadataSets define all of:
 
-* **JSON Schema**: Used to define the structure of the metadata sets, providing a clear and understandable format for programmers.
+* **JSON Schema**: Used to define the structure of the metadata sets, providing a clear and understandable format for proGrammars.
 * **JSON-LD**: Used to link disjoint properties from these metadata sets into an RDF graph, allowing for the integration of isolated sets of metadata.
 * **GraphQL**: Used to unify the disjoint metadata sets into a queryable unified facade, providing a flexible and efficient way to query the metadata.
 

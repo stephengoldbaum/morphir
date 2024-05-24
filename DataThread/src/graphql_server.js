@@ -33,25 +33,16 @@ function runGraphQL() {
   log("Using base folder: " + baseDir);
 
   // Define the GraphQL schema
-  const elementSchemaFile = fs.readFileSync(path.join(path.join(__dirname, 'DataThread'), 'Element.schema.graphql'), 'utf8');
-  const datasetSchemaFile = fs.readFileSync(path.join(path.join(__dirname, 'DataThread'), 'Dataset.schema.graphql'), 'utf8');
+  const elementSchemaFile = fs.readFileSync(path.join(path.join(path.join(__dirname, 'DataThread'), 'Grammar'), 'Element.schema.graphql'), 'utf8');
+  const datasetSchemaFile = fs.readFileSync(path.join(path.join(path.join(__dirname, 'DataThread'), 'Grammar'),  'Dataset.schema.graphql'), 'utf8');
   const querySchemaFile = fs.readFileSync(path.join(__dirname, 'DataThread.schema.graphql'), 'utf8');
-  // const schema = mergeTypeDefs([elementSchemaFile, datasetSchemaFile, querySchemaFile]);
-  // const schema = buildSchema(schemaFile);
 
-  //Implement the resolvers
-  // const root = {
-  //   dataset: ({ id }) => { return dataset(id); },
-  //   datasets: () => { return datasets(); },
-  //   element: ({ id }) => { return element(id); },
-  //   elements: () => { datasets(); }, // TODO
-  // };
   const resolvers = {
     Query: {
       dataset: ({ id }) => { return dataset(id); },
       datasets: () => { return datasets(); },
       element: ({ id }) => { return element(id); },
-      elements: () => { datasets(); },
+      elements: () => { return elements(); },
     }
   };
 
@@ -141,6 +132,17 @@ function datasets() {
     return inflateDataset(dataset);
   });
   return datasets;
+}
+
+function elements() {
+  var files = recursiveSearch(baseDir, 'element.json');
+
+  const items = files.map(file => {
+    const item = inflate(file);
+    return inflateElement(item);
+  });
+
+  return items;
 }
 
 /**

@@ -1,5 +1,5 @@
 {
-    "id": "dataset:Foo:foos",
+    "id": "dataset:/Foo/Bah:foos",
     "name": "Foos",
     "version": 1,
     "fields": [

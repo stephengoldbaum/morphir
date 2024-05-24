@@ -1,5 +1,5 @@
 {
-    "id":"element:Foo:foo",
+    "id":"element:/Foo/Bah:foo",
     "name":"Foo",
     "element_type": {
         "Text" : {}
