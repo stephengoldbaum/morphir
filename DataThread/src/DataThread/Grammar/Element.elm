@@ -13,7 +13,17 @@ type ElementType
     | DateTime
     | Boolean
     | Enum (List String)
+    | Record Fields
+    -- | Option ElementID
     | Reference ElementID
+
+type alias Fields = List Field
+
+type alias Field = 
+    { name : String
+    , element : ElementID
+    , optional : Maybe Bool
+    }
 
 type alias TextConstraints =
     { min_length : Maybe Int

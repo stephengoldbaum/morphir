@@ -1,7 +1,20 @@
 module DataThread.API exposing (..)
 
 import Data exposing (..)
+
+type Scheme = element | dataset
+
 type alias Domain = List String
+
+type alias URI = 
+    { scheme : Scheme
+    , domain : Domain
+    , name : String
+    }
+
+uriToID : URI -> ID
+uriToID uri = 
+    uri.scheme ++ ":" ++ (String.join "/" uri.domain) ++ ":" ++ uri.name
 
 type alias RequestFailed =
     { requestId: ID
@@ -31,7 +44,7 @@ createElement : CreateElement -> Cmd Msg
 setElementConstraints : ElementConstraints -> Cmd Msg
 
 ---- Datasets
-type alias CreateDatasetCommand =
+type alias CreateDataset =
     { requestId: ID
     , domain : Domain
     , dataset : Dataset
@@ -43,7 +56,7 @@ type alias DatasetCreated =
     , dataset : Dataset
     }
 
-createDataset : CreateDatasetCommand -> Cmd Msg
+createDataset : CreateDataset -> Cmd Msg
 -- updateDataset : Dataset -> Cmd Msg
 -- deleteDataset : DatasetID -> Cmd Msg
 
@@ -55,7 +68,7 @@ createDataset : CreateDatasetCommand -> Cmd Msg
 -- unlinkFromDataset : DatasetID -> A -> Cmd Msg
 
 ---- Clear
-type alias ClearAllCommand =
+type alias ClearAll =
     { requestId: ID
     , domain : Maybe Domain
     }
@@ -65,4 +78,4 @@ type alias ClearedAll =
     , domain : Maybe Domain
     }
 
-clearAll : ClearAllCommand -> Cmd Msg
+clearAll : ClearAll -> Cmd Msg
