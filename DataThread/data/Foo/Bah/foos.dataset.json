@@ -8,6 +8,6 @@
             "element": "element:/Foo/Bah:foo",
             "key": false,
             "optional": false
-       }
-   ]
+        }
+    ]
 }

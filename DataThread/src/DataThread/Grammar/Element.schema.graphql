@@ -5,7 +5,7 @@ type Element {
   info: ElementInfo
 }
 
-union ElementType = TextType | NumberType | ReferenceType | DateType | TimeType | DateTimeType | BooleanType | EnumType
+union ElementType = TextType | NumberType | ReferenceType | DateType | TimeType | DateTimeType | BooleanType | EnumType | RecordType
 
 scalar Date
 
@@ -65,6 +65,22 @@ type EnumType {
 type Enum {
   values: [String]!
 }
+
+type RecordType {
+  Record : Record!
+}
+
+type Record {
+  name: String
+  fields: [Field]
+}
+
+type Field {
+  name: String!
+  element: Element!
+  optional: Boolean
+}
+
 
 type ElementInfo {
   id: ID!
