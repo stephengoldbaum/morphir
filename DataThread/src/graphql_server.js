@@ -98,10 +98,6 @@ function recursiveSearch(dir, pattern) {
   return results;
 }
 
-function urnToFile(urn) {
-  return urnToFile(urn, undefined);
-}
-
 /**
  * Converts a URN (Uniform Resource Name) to a file path.
  * @param {string} urn - The URN to convert.
@@ -245,10 +241,6 @@ function inflateElement(element) {
   }
 
   return element;
-}
-
-function getJSONData(id) {
-  return getJSONData(id);
 }
 
 function getJSONData(id, typ) {

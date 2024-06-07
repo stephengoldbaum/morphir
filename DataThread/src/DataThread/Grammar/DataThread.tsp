@@ -3,7 +3,7 @@ import "@typespec/json-schema";
 using TypeSpec.JsonSchema;
 
 @jsonSchema
-namespace Schemas;
+namespace DataThread.Grammar;
 
 scalar URI extends string;
 scalar ID extends URI;
