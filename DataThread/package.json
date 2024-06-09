@@ -15,10 +15,9 @@
     "scripts": {
         "graph-data": "node ./src/graphql-server.js"
     },
-    "devDependencies": {
-    },
     "dependencies": {
         "@apollo/client": "^3.9.11",
+        "@typespec/json-schema": "^0.56.0",
         "apollo-server": "^3.13.0",
         "express": "^4.19.2",
         "graphql": "^16.8.1",
@@ -27,9 +26,9 @@
         "ruru": "^2.0.0-beta.11"
     },
     "files": [
-        "morphir-ir.json"
-        ,"metastore"
-        ,"bin"
-        ,"src"
+        "morphir-ir.json",
+        "metastore",
+        "bin",
+        "src"
     ]
 }

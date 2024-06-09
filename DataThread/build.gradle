@@ -1,0 +1,65 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.1.1'
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+group 'com.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+/*
+    //id "com.netflix.dgs.codegen" version "6.2.1"
+
+dependencyManagement {
+  imports {
+     mavenBom("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:latest.release")
+  }
+}
+
+generateJava{
+   schemaPaths = ["${projectDir}/DataThread/src/main/resources"]
+   packageName = 'org.datathread.query'
+   generateClient = true
+}
+
+*/
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+    implementation 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.1.1'
+    implementation 'com.squareup:javapoet:1.13.0'
+//    implementation "com.netflix.graphql.dgs:graphql-dgs-spring-graphql-starter"
+
+    testImplementation 'junit:junit:4.13.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+apply plugin: 'jsonschema2pojo'
+
+jsonSchema2Pojo {
+    source = files("$projectDir/generated/tsp-output")
+    targetPackage = 'org.datathread.grammar'
+    targetDirectory = file("$projectDir/generated/main/java")
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/main/java', 'generated/main/java'
+        }
+    }
+}

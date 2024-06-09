@@ -7,3 +7,6 @@ node_modules
 # Temp
 C4-PlantUML
 .idea/
+.gradle/
+generated/
+build/
