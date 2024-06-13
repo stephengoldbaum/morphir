@@ -1,0 +1,9 @@
+ query {
+    elements {
+      element_type {
+        __typename
+      }
+      id
+      name
+    }
+  }

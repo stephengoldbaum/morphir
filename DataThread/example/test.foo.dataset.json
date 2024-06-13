@@ -5,7 +5,7 @@
     "fields": [
         {
             "name": "foo",
-            "element": "element:/Foo/Bah:foo",
+            "element": "element:Foo:foo",
             "key": false,
             "optional": false
        }

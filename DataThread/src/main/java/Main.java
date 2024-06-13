@@ -1,12 +1,12 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.javapoet.TypeSpec;
+import datathread.metastore.Element;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.File;
 
-import org.datathread.grammar._typespec.json_schema.Element;
 import javax.lang.model.element.Modifier;
 
 public class Main {
@@ -14,7 +14,7 @@ public class Main {
         String json = null;
         try {
             System.out.println(new File(".").getAbsolutePath());
-            File baseDir = new File("DataThread/example/metastore");
+            File baseDir = new File("sharing/example/metastore");
             String id = "element:person:active";
             File file = new File(baseDir, resolveForID(id).getPath());
 
