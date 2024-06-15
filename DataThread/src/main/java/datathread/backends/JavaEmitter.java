@@ -24,7 +24,7 @@ public class JavaEmitter {
     }
 
     public TypeSpec handleDataset(Dataset dataset) {
-        String name = nameToJavaClassName(dataset.getName());
+        String name = nameToJava(dataset.getName());
         List<FieldSpec> fields =
             dataset.getFields().stream()
                 .map(f -> handleField(this.context, f))
@@ -62,15 +62,12 @@ public class JavaEmitter {
             case "DateTime":
                 return ClassName.get(java.time.LocalDateTime.class);
             case "Enum":
-                String name = ("" + elementType.getAdditionalProperties().get("name"))
-                    .replaceAll("\\{", "").replaceAll("\\}", "");
-                return resolveReference(name);
+                return idToClassName(elementType.getAdditionalProperties().get("name").toString());
             case "Number":
                 return ClassName.get(Double.class);
             case "Reference":
-                String ref = ("" + elementType.getAdditionalProperties().get("Reference"))
-                    .replaceAll("\\{", "").replaceAll("\\}", "");
-                return resolveReference(ref);
+                String ref = "" + elementType.getAdditionalProperties().get("Reference");
+                return idToClassName(ref);
             case "Text":
                 return ClassName.get(String.class);
             default:
@@ -111,33 +108,15 @@ public class JavaEmitter {
     }
 
     //// Utils ////
-    public static ClassName resolveReference(String id) {
-        ClassName className = idToClassName(id);
-        ClassName result = className;
-
-        switch (className.canonicalName()) {
-            case "core.Integer":
-                result = ClassName.get(Integer.class);
-                break;
-        }
-
-        return result;
-    }
-
     public static ClassName idToClassName(String id) {
         String[] split = id.split(":");
 
-        String pkg = escape(split[1]);
-        String name = nameToJavaClassName(split[2]);
+        String pkg = nameToJava(split[1]);
+        String name = nameToJava(split[2]);
 
         return ClassName.get(pkg, name);
     }
-
-    public static String escape(String s) {
-        return s.replaceAll("\\W", "_");
-    }
-
-    public static String nameToJavaClassName(String name) {
+    public static String nameToJava(String name) {
         return Arrays.stream(name.split("\\s+"))
            .map(JavaEmitter::capitalize)
                 .collect(Collectors.joining("_"));

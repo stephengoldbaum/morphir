@@ -1,0 +1,83 @@
+/**
+ * @fileoverview This file contains the implementation of a GraphQL server using Express.
+ * It defines the GraphQL schema, implements the resolvers, and creates an Express server with a GraphQL endpoint.
+ * The server also serves the GraphiQL IDE and listens on port 4000.
+ * Additionally, it includes helper functions for recursive search, converting URNs to file paths, and inflating datasets and elements.
+ * @module graphql_server
+ */
+var express = require("express")
+var { createHandler } = require("graphql-http/lib/use/express")
+var { buildSchema } = require("graphql")
+const { mergeTypeDefs } = require('@graphql-tools/merge');
+const { makeExecutableSchema } = require("@graphql-tools/schema");
+var { ruruHTML } = require("ruru/server")
+const fs = require('fs');
+const path = require('path');
+const { log } = require("console");
+
+const file_store = require('./file_store');
+const gql_resolvers = require('./graphql_resolver');
+
+module.exports = { runGraphQL };
+
+runGraphQL();
+
+/**
+ * Runs the GraphQL server.
+ */
+function runGraphQL() {
+  // Setup
+  const baseDirArg = process.argv.includes('--baseDir') 
+      ? process.argv[process.argv.indexOf('--baseDir') + 1]
+      : 'metastore';
+
+  const baseDir = path.resolve(process.cwd(), baseDirArg);
+    log("Using base folder: " + baseDir);
+
+  var storage = new file_store.Storage(baseDir);
+  var  elementResolver = new gql_resolvers.ElementResolver(storage);
+  var datasetResolver = new gql_resolvers.DatasetResolver(storage, elementResolver);
+
+  // Define the GraphQL schema
+    const pathToGrammar = path.join(__dirname, '..', 'resources');
+    const elementSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'Element.graphqls'), 'utf8');
+    const datasetSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'Dataset.graphqls'), 'utf8');
+    const querySchemaFile = fs.readFileSync(path.join(pathToGrammar, 'DataThread.graphqls'), 'utf8');
+
+    const resolvers = {
+      Query: {
+        dataset: (_, { id }) => datasetResolver.dataset(id),
+        datasets: () => datasetResolver.datasets(),
+        element: (_, { id }) => elementResolver.element(id),
+        elements: () => elementResolver.elements(),
+      }
+    };
+
+  const schema = makeExecutableSchema({
+    typeDefs: [elementSchemaFile, datasetSchemaFile, querySchemaFile],
+    resolvers: resolvers
+  });
+  
+  // Create an express server and a GraphQL endpoint
+  var app = express();
+
+  // Create and use the GraphQL handler.
+  app.all(
+    "/graphql",
+    createHandler({
+      schema: schema,
+      rootValue: resolvers
+    })
+  )
+
+
+  // Serve the GraphiQL IDE.
+  app.get("/", (_req, res) => {
+    res.type("html")
+    res.end(ruruHTML({ endpoint: "/graphql" }))
+  })
+
+  // Start the server at port
+  app.listen(4000)
+  console.log("Running a GraphQL API server at http://localhost:4000/graphql")
+}
