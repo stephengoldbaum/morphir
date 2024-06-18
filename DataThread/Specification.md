@@ -39,7 +39,10 @@ The specification defines core Metadata Sets for Dataset and Element. All other 
 Important components of the Specification are:
 ### Identifiers
 Every Dataset and Element must be uniquely identified. It is the responsibility of the owner to set the identification. To avoid clashes, the Specification follows the [Uniform Resource Identifier](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) standard with the following URN structure of:
+
   * `[type]:[/domain][/subdomain?]:[name]`.
+
+Note that domains and names can contain spaces, which allows the identifier to match the actual words.
 
 ### Core Data Structures
 #### Dataset Structure

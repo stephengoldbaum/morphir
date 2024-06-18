@@ -6,67 +6,71 @@ const { log } = require("console");
 
 
 class ElementResolver {
-    constructor(storage) {
-        this.storage = storage;
-    }
+  constructor(storage, elementInfoResolver) {
+      this.storage = storage;
+      this.elementInfoResolver = elementInfoResolver;
+  }
 
-    element(id) {
-      var element = this.storage.resolveAndRead(id, "element");
+  get(id) {
+    var element = this.storage.resolveAndRead(id, "element");
 
-      if(!(element === undefined) && element !== null) {
-        element = inflateElement(this.storage, element);
-      }
-
-      return element;
-    }
-
-    elements() {
-      const elements =
-        this.storage.findAllAndRead('element.json')
-        .map(element => inflateElement(this.storage, element));
-
-      return elements;
-    }
-}
- function inflateElement(storage, element) {
-  const elementType = element.element_type;
-    if (elementType && typeof elementType === 'object') {
-        const typeNames = {
-            'Number': 'NumberType',
-            'Reference': 'ReferenceType',
-            'Text': 'TextType',
-            'Date': 'DateType',
-            'Time': 'TimeType',
-            'DateTime': 'DateTimeType',
-            'Boolean': 'BooleanType',
-            'Enum': 'EnumType'
-        };
-
-        for (const key in typeNames) {
-            if (elementType.hasOwnProperty(key)) {
-                elementType.__typename = typeNames[key];
-
-                if (key === 'Reference') {
-                    const refId = elementType.Reference.ref;
-                    const referencedElement = storage.resolveAndRead(refId, "element");
-                    elementType.Reference.ref = inflateElement(storage, referencedElement);
-                }
-                if (key === 'Boolean') {
-                    elementType.Bool = {};
-                }
-                break;
-            }
-        }
-
-        if (!element.info) {
-          const infoOverride = storage.resolveAndRead(element.id, "element_info");
-          element.info = infoOverride;
-        }
+    if(!(element === undefined) && element !== null) {
+      element = this.inflateElement(element);
     }
 
     return element;
-}
+  }
 
+  getAll() {
+    const elements =
+      this.storage.findAllAndRead('element.json')
+      .map(element => this.inflateElement(element));
+
+    return elements;
+  }
+
+  inflateElement(element) {
+    const elementType = element.element_type;
+      if (elementType && typeof elementType === 'object') {
+          const typeNames = {
+              'Number': 'NumberType',
+              'Reference': 'ReferenceType',
+              'Text': 'TextType',
+              'Date': 'DateType',
+              'Time': 'TimeType',
+              'DateTime': 'DateTimeType',
+              'Boolean': 'BooleanType',
+              'Enum': 'EnumType'
+          };
+
+          for (const key in typeNames) {
+              if (elementType.hasOwnProperty(key)) {
+                  elementType.__typename = typeNames[key];
+
+                  if (key === 'Reference') {
+                      const refId = elementType.Reference.ref;
+                      const referencedElement = this.storage.resolveAndRead(refId, "element");
+                      elementType.Reference.ref = this.inflateElement(referencedElement);
+                  }
+                  if (key === 'Boolean') {
+                      elementType.Bool = {};
+                  }
+                  break;
+              }
+          }
+
+          if (!element.info) {
+            const infoOverride = this.elementInfoResolver.get(element.id);
+
+            if(infoOverride != undefined) {
+              element.info = infoOverride;
+            }
+          }
+      }
+
+      return element;
+  }
+}
 
 class DatasetResolver {
     constructor(storage, elementResolver) {
@@ -74,12 +78,12 @@ class DatasetResolver {
         this.elementResolver = elementResolver;
     }
 
-     dataset(id) {
+     get(id) {
       const dataset = this.storage.resolveAndRead(id, "dataset");
       return inflateDataset(dataset);
     }
 
-    datasets() {
+    getAll() {
       const datasets = this.storage
         .findAllAndRead('dataset.json')
         .map(dataset => this.inflateDataset(dataset));
@@ -105,13 +109,13 @@ class DatasetResolver {
         if(field.element === undefined)
         {
           const elementUrn = "element" + fieldUrn;
-          const elmt = this.elementResolver.element(elementUrn);
+          const elmt = this.elementResolver.get(elementUrn);
           field.element = elmt;
         }
         else if (typeof field.element === 'string')
         {
           const elementUrn = field.element;
-          const elmt = this.elementResolver.element(elementUrn);
+          const elmt = this.elementResolver.get(elementUrn);
           field.element = elmt;
         }
         else
@@ -123,7 +127,7 @@ class DatasetResolver {
         if(field.element === undefined || field.element == null) {
           log("Setting " + field.name + " to nil in " + dataset.id);
           const elementUrn = "element:core:nil";
-          const elmt = this.elementResolver.element(elementUrn);
+          const elmt = this.elementResolver.get(elementUrn);
           field.element = elmt;
         }
 
@@ -136,8 +140,20 @@ class DatasetResolver {
     }
 }
 
+class ElementInfoResolver {
+  constructor(storage) {
+    this.storage = storage;
+  }
+
+  get(id) {
+    var item = this.storage.resolveAndRead(id, "element_info");
+    return item;
+  }
+}
+
 //// Module ////
 module.exports = {
-    DatasetResolver,
-    ElementResolver
+  ElementResolver,
+  DatasetResolver,
+  ElementInfoResolver
 };

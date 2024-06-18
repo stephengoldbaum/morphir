@@ -40,17 +40,17 @@ An example can be found in the [metastore folder](metastore). Some things to loo
 * Run `npm install`
 
 #### People example
-  * `node src/request_processor.js` --baseDir example/metastore
+  * `node src/request_processor.js --baseDir example/metastore`
   * Open a browser to the written link.
   * Execute any of the [sample queries](example_graphql_queries.json).
 
 #### Clean example
 * Run the Request Process
-  * `node src/request_processor.js` --baseDir data
+  * `node src/main/js/request_processor.js --baseDir data`
   * `curl -X POST -H "Content-Type: application/json" -d @example/test.foo.element.json http://localhost:3000/element`
   * `curl -X POST -H "Content-Type: application/json" -d @example/test.foo.dataset.json http://localhost:3000/dataset`
 * Run Query Processor
-  * `node src/graphql_server.js` --baseDir data
+  * `node src/main/js/graphql_server.js` --baseDir data
   * Open a browser to the written link.
   * Execute any of the [sample queries](example_graphql_queries.json).
 

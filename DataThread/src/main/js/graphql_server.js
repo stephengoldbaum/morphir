@@ -34,9 +34,12 @@ function runGraphQL() {
   const baseDir = path.resolve(process.cwd(), baseDirArg);
     log("Using base folder: " + baseDir);
 
-  var storage = new file_store.Storage(baseDir);
-  var  elementResolver = new gql_resolvers.ElementResolver(storage);
-  var datasetResolver = new gql_resolvers.DatasetResolver(storage, elementResolver);
+  const automatedStorage = new file_store.Storage(path.resolve(baseDir, 'automated'));
+  const editedStorage = new file_store.Storage(path.resolve(baseDir, 'edited'));
+
+  const elementInfoResolver = new gql_resolvers.ElementInfoResolver(editedStorage);
+  const elementResolver = new gql_resolvers.ElementResolver(automatedStorage, elementInfoResolver);
+  const datasetResolver = new gql_resolvers.DatasetResolver(automatedStorage, elementResolver);
 
   // Define the GraphQL schema
     const pathToGrammar = path.join(__dirname, '..', 'resources');
@@ -46,10 +49,10 @@ function runGraphQL() {
 
     const resolvers = {
       Query: {
-        dataset: (_, { id }) => datasetResolver.dataset(id),
-        datasets: () => datasetResolver.datasets(),
-        element: (_, { id }) => elementResolver.element(id),
-        elements: () => elementResolver.elements(),
+        dataset: (_, { id }) => datasetResolver.get(id),
+        datasets: () => datasetResolver.getAll(),
+        element: (_, { id }) => elementResolver.get(id),
+        elements: () => elementResolver.getAll(),
       }
     };
 
