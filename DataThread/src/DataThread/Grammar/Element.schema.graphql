@@ -80,11 +80,3 @@ type Field {
   element: Element!
   optional: Boolean
 }
-
-
-type ElementInfo {
-  id: ID!
-  description: String
-  display_name: String
-  short_display_name: String
-}

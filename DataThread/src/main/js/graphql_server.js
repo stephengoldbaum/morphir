@@ -44,8 +44,10 @@ function runGraphQL() {
   // Define the GraphQL schema
     const pathToGrammar = path.join(__dirname, '..', 'resources');
     const elementSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'Element.graphqls'), 'utf8');
+    const elementInfoSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'ElementInfo.graphqls'), 'utf8');
     const datasetSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'Dataset.graphqls'), 'utf8');
     const querySchemaFile = fs.readFileSync(path.join(pathToGrammar, 'DataThread.graphqls'), 'utf8');
+    const allSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'All.graphqls'), 'utf8');
 
     const resolvers = {
       Query: {
@@ -57,7 +59,7 @@ function runGraphQL() {
     };
 
   const schema = makeExecutableSchema({
-    typeDefs: [elementSchemaFile, datasetSchemaFile, querySchemaFile],
+    typeDefs: [elementSchemaFile, elementInfoSchemaFile, datasetSchemaFile, querySchemaFile, allSchemaFile],
     resolvers: resolvers
   });
   

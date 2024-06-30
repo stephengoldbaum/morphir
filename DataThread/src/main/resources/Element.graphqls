@@ -2,7 +2,6 @@ type Element {
   id: ID!
   name: String!
   element_type: ElementType!
-  info: ElementInfo
 }
 
 union ElementType = TextType | NumberType | ReferenceType | DateType | TimeType | DateTimeType | BooleanType | EnumType | RecordType
@@ -79,12 +78,4 @@ type Field {
   name: String!
   element: Element!
   optional: Boolean
-}
-
-
-type ElementInfo {
-  id: ID!
-  description: String
-  display_name: String
-  short_display_name: String
 }
