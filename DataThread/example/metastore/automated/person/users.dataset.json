@@ -34,23 +34,6 @@
             "optional": false
         },
         {
-            "name": "foo",
-            "element": {
-                "id": "element:person:users#foo",
-                "name": "Foo",
-                "description": "Foo",
-                "element_type": { "Text": {} },
-                "info": {
-                    "description": "What is a Foo?",
-                    "display_name": "Fooooo",
-                    "short_display_name": "Foo"
-                }
-            },
-            "description": "Foo",
-            "key": false,
-            "optional": false
-        },
-        {
             "name": "savingsAmount",
             "element": "element:person:savings_amount",
             "key": false,

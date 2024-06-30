@@ -3,13 +3,15 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.1.1'
+        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.2.1'
     }
 }
 
 plugins {
     id 'java'
 }
+
+apply plugin: 'jsonschema2pojo'
 
 group 'com.example'
 version '1.0-SNAPSHOT'
@@ -37,7 +39,7 @@ generateJava{
 
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
-    implementation 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.1.1'
+    implementation 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.2.1'
     implementation 'com.squareup:javapoet:1.13.0'
 //    implementation "com.netflix.graphql.dgs:graphql-dgs-spring-graphql-starter"
 
@@ -47,8 +49,6 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
-apply plugin: 'jsonschema2pojo'
 
 jsonSchema2Pojo {
     source = files("$projectDir/generated/tsp-output")

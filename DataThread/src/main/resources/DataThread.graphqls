@@ -1,0 +1,19 @@
+  schema {
+    query: Query
+  }
+
+  input ElementInput {
+    id: ID!
+  }
+  
+  input DatasetInput {
+    id: ID!
+  }
+  
+  type Query {
+    dataset(id: ID!): Dataset
+    datasets: [Dataset!]!
+
+    element(id: ID!): Element
+    elements: [Element!]!
+  }
