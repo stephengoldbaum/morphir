@@ -20,7 +20,20 @@ class Storage {
             .findAll(pattern)
             .map(file => inflate(file));
     }
-}
+
+    write(id, typ, data) {
+      const file = urnToFile(this.baseDir, id, typ);
+      const folder = path.dirname(file);
+      // const folder = ensurePath(folderPath);
+      const json = JSON.stringify(data, null, 2);
+
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder, { recursive: true });
+      }
+
+      fs.writeFileSync(file, json);
+    }
+  }
 
 /**
  * Recursively searches a directory for files matching a specific pattern.
@@ -58,8 +71,15 @@ function urnToFile(baseDir, urn, typ) {
     typ = items[0];
   }
 
-  const file = path.join(baseDir, `/${items[1]}`, `${items[2]}.${typ}.json`)
+  const folderPath = unescape(items[1]);
+  const filename = unescape(items[2]);
+
+  const file = path.join(baseDir, `/${folderPath}`, `${filename}.${typ}.json`)
   return file;
+}
+
+function unescape(str) {
+  return str.replaceAll("%20", " ");
 }
 
 /**
@@ -87,6 +107,29 @@ function urnToFile(baseDir, urn, typ) {
   } else {
     return undefined;
   }
+}
+
+/**
+ * Ensures that a directory path exists, creating any missing directories along the way.
+ * @param {string} baseDir - The base directory for file storage.
+ * @param {string} path - The directory path to ensure.
+ * @returns {string} - The final parent directory path.
+ */
+function ensurePath(baseDir, path) {
+  const folders = path.split('/');
+  var parent = baseDir;
+
+  for(const folder of folders) {
+    const folderPath = path.join(parent, folder);
+
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath, { recursive: true });
+    }
+
+    parent = folderPath
+  }
+
+  return parent;
 }
 
 

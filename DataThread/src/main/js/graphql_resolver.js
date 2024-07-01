@@ -31,44 +31,50 @@ class ElementResolver {
 
   inflateElement(element) {
     const elementType = element.element_type;
-      if (elementType && typeof elementType === 'object') {
-          const typeNames = {
-              'Number': 'NumberType',
-              'Reference': 'ReferenceType',
-              'Text': 'TextType',
-              'Date': 'DateType',
-              'Time': 'TimeType',
-              'DateTime': 'DateTimeType',
-              'Boolean': 'BooleanType',
-              'Enum': 'EnumType'
-          };
 
-          for (const key in typeNames) {
-              if (elementType.hasOwnProperty(key)) {
-                  elementType.__typename = typeNames[key];
+    if(!elementType) {
+      //TODO Look for type override in edited
 
-                  if (key === 'Reference') {
-                      const refId = elementType.Reference.ref;
-                      const referencedElement = this.storage.resolveAndRead(refId, "element");
-                      elementType.Reference.ref = this.inflateElement(referencedElement);
-                  }
-                  if (key === 'Boolean') {
-                      elementType.Bool = {};
-                  }
-                  break;
-              }
-          }
+    }
 
-          if (!element.info) {
-            const infoOverride = this.elementInfoResolver.get(element.id);
+    if (elementType && typeof elementType === 'object') {
+        const typeNames = {
+            'Number': 'NumberType',
+            'Reference': 'ReferenceType',
+            'Text': 'TextType',
+            'Date': 'DateType',
+            'Time': 'TimeType',
+            'DateTime': 'DateTimeType',
+            'Boolean': 'BooleanType',
+            'Enum': 'EnumType'
+        };
 
-            if(infoOverride != undefined) {
-              element.info = infoOverride;
+        for (const key in typeNames) {
+            if (elementType.hasOwnProperty(key)) {
+                elementType.__typename = typeNames[key];
+
+                if (key === 'Reference') {
+                    const refId = elementType.Reference.ref;
+                    const referencedElement = this.storage.resolveAndRead(refId, "element");
+                    elementType.Reference.ref = this.inflateElement(referencedElement);
+                }
+                if (key === 'Boolean') {
+                    elementType.Bool = {};
+                }
+                break;
             }
-          }
-      }
+        }
 
-      return element;
+        if (!element.info) {
+          const infoOverride = this.elementInfoResolver.get(element.id);
+
+          if(infoOverride != undefined) {
+            element.info = infoOverride;
+          }
+        }
+    }
+
+    return element;
   }
 }
 
