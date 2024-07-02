@@ -1,3 +1,4 @@
 extend type Element {
     info: ElementInfo
+    element_type: ElementType
 }

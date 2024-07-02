@@ -46,7 +46,8 @@ class ElementResolver {
             'Time': 'TimeType',
             'DateTime': 'DateTimeType',
             'Boolean': 'BooleanType',
-            'Enum': 'EnumType'
+            'Enum': 'EnumType',
+            'Record': 'RecordType'
         };
 
         for (const key in typeNames) {
@@ -157,9 +158,74 @@ class ElementInfoResolver {
   }
 }
 
+class TypeResolver { 
+  constructor(storages) {
+    this.storages = storages;
+  }
+
+  get(id) {
+    var item = null;
+    
+    for (const storage of this.storages) {
+      item = storage.resolveAndRead(id, "type");
+    }
+
+    return item;
+  }
+}
+
+/**
+ * Resolves the element type based on the provided object.
+ * @param {object} obj - The object to resolve the element type from.
+ * @param {object} context - The context object.
+ * @param {object} info - The info object.
+ * @returns {string|null} - The resolved element type or null if not found.
+ */
+function resolveElementType(obj, context, info) {
+  if (obj.Boolean) {
+    return 'BooleanType';
+  }
+
+  if (obj.Date) {
+    return 'DateType';
+  }
+
+  if (obj.DateTime) {
+    return 'DateTimeType';
+  }
+
+  if (obj.Enum) {
+    return 'EnumType';
+  }
+
+  if (obj.Number) {
+    return 'NumberType';
+  }
+
+  if (obj.Record) {
+    return 'RecordType';
+  }
+
+  if (obj.Reference) {
+    return 'ReferenceType';
+  }
+
+  if (obj.Text) {
+    return 'TextType';
+  }
+
+  if (obj.Time) {
+    return 'TimeType';
+  }
+
+  return null;
+}
+
 //// Module ////
 module.exports = {
   ElementResolver,
   DatasetResolver,
-  ElementInfoResolver
+  ElementInfoResolver,
+  TypeResolver,
+  resolveElementType
 };

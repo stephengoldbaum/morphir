@@ -38,8 +38,51 @@ function runGraphQL() {
   const editedStorage = new file_store.Storage(path.resolve(baseDir, 'edited'));
 
   const elementInfoResolver = new gql_resolvers.ElementInfoResolver(editedStorage);
+  const typeResolver = new gql_resolvers.TypeResolver([automatedStorage, editedStorage]);
   const elementResolver = new gql_resolvers.ElementResolver(automatedStorage, elementInfoResolver);
   const datasetResolver = new gql_resolvers.DatasetResolver(automatedStorage, elementResolver);
+
+  const resolvers = {
+    Query: {
+      dataset: (_, { id }) => datasetResolver.get(id),
+      datasets: () => datasetResolver.getAll(),
+      // element: (_, { id }) => elementResolver.get(id),
+      element: (_, { id }) => {
+        const element = elementResolver.get(id);
+        const elementType = typeResolver.get(element.id);
+        if(elementType) {
+          element.element_type = elementType.element_type;
+        }
+        return element;
+    },
+      // elements: () => elementResolver.getAll(),
+      elements: () => {
+        const elements = elementResolver.getAll();
+        return elements.map(element => {
+          const elementType = typeResolver.get(element.id);
+          if(elementType) {
+            element.element_type = elementType.element_type;
+          }
+          return element;
+        });
+      }
+    },
+    ElementType: {
+      __resolveType(obj, context, info){
+        return gql_resolvers.resolveElementType(obj, context, info);
+        // if(obj.Date){
+        //   return 'DateType';
+        // }
+  
+        // if(obj.Number){
+        //   return 'NumberType';
+        // }
+  
+        // return null; // GraphQLError is thrown if no type matches
+      },
+    }
+    
+  };
 
   // Define the GraphQL schema
     const pathToGrammar = path.join(__dirname, '..', 'resources');
@@ -47,19 +90,11 @@ function runGraphQL() {
     const elementInfoSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'ElementInfo.graphqls'), 'utf8');
     const datasetSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'Dataset.graphqls'), 'utf8');
     const querySchemaFile = fs.readFileSync(path.join(pathToGrammar, 'DataThread.graphqls'), 'utf8');
+    const typeSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'Type.graphqls'), 'utf8');
     const allSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'All.graphqls'), 'utf8');
 
-    const resolvers = {
-      Query: {
-        dataset: (_, { id }) => datasetResolver.get(id),
-        datasets: () => datasetResolver.getAll(),
-        element: (_, { id }) => elementResolver.get(id),
-        elements: () => elementResolver.getAll(),
-      }
-    };
-
   const schema = makeExecutableSchema({
-    typeDefs: [elementSchemaFile, elementInfoSchemaFile, datasetSchemaFile, querySchemaFile, allSchemaFile],
+    typeDefs: [elementSchemaFile, elementInfoSchemaFile, datasetSchemaFile, querySchemaFile, typeSchemaFile, allSchemaFile],
     resolvers: resolvers
   });
   

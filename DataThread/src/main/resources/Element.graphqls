@@ -1,7 +1,7 @@
 type Element {
   id: ID!
   name: String!
-  element_type: ElementType!
+  element_type: ElementType
 }
 
 union ElementType = TextType | NumberType | ReferenceType | DateType | TimeType | DateTimeType | BooleanType | EnumType | RecordType
