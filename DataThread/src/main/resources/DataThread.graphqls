@@ -16,4 +16,5 @@
 
     element(id: ID!): Element
     elements: [Element!]!
+    baseType(id: ID!): ElementType
   }

@@ -1,21 +1,18 @@
 {
-    "name": "data-sharing",
+    "name": "data-thread",
     "version": "0.0.1",
+    "main": "package.exports.js",
     "keywords": [
         "data",
-        "sharing"
+        "sharing",
+        "datathread"
     ],
     "engines": {
         "node": ">=18.12.0 <20.11.1",
         "npm": ">=8.19.2 <9.6.5"
     },
-    "bin": {
-        "graph-data": ".\\src\\main\\js\\graphql-server.js"
-    },
+    "bin": {},
     "scripts": {
-        "graph-data": "node ./src/main/js/graphql_server.js --baseDir example/metastore"
-    },
-    "devDependencies": {
     },
     "dependencies": {
         "@apollo/client": "^3.9.11",
@@ -24,12 +21,12 @@
         "graphql": "^16.8.1",
         "graphql-http": "^1.22.1",
         "morphir-elm": "^2.89.0",
+        "require-directory": "^2.1.1",
         "ruru": "^2.0.0-beta.11"
     },
     "files": [
-        "morphir-ir.json"
-        ,"metastore"
-        ,"bin"
-        ,"src"
+        "index.js",
+        "src/main/js",
+        "src/main/resources"
     ]
 }

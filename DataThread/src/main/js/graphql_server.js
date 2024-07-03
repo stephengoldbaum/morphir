@@ -54,7 +54,7 @@ function runGraphQL() {
           element.element_type = elementType.element_type;
         }
         return element;
-    },
+      },
       // elements: () => elementResolver.getAll(),
       elements: () => {
         const elements = elementResolver.getAll();
@@ -65,20 +65,12 @@ function runGraphQL() {
           }
           return element;
         });
-      }
+      },
+      baseType: (_, { id }) => elementResolver.getBaseType(id),
     },
     ElementType: {
       __resolveType(obj, context, info){
         return gql_resolvers.resolveElementType(obj, context, info);
-        // if(obj.Date){
-        //   return 'DateType';
-        // }
-  
-        // if(obj.Number){
-        //   return 'NumberType';
-        // }
-  
-        // return null; // GraphQLError is thrown if no type matches
       },
     }
     

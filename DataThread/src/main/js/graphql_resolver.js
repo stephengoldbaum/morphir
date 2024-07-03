@@ -77,6 +77,20 @@ class ElementResolver {
 
     return element;
   }
+
+  getBaseType(id) {
+    const element = this.get(id);
+    var elementType = element.element_type;
+
+    while(elementType && "Reference" in elementType) {
+      const refId = elementType.Reference.ref.id;
+      const referencedElement = this.get(refId);
+      elementType = referencedElement.element_type;
+    }
+
+    return elementType;
+  
+  }
 }
 
 class DatasetResolver {
