@@ -82,14 +82,32 @@ class ElementResolver {
     const element = this.get(id);
     var elementType = element.element_type;
 
-    while(elementType && "Reference" in elementType) {
+    while(elementType && element.Reference) {
       const refId = elementType.Reference.ref.id;
       const referencedElement = this.get(refId);
       elementType = referencedElement.element_type;
     }
 
     return elementType;
-  
+  }
+
+  getElementLineage(element) {
+    const lineage = [];
+    var elementType = element.element_type;
+
+    while(elementType && elementType.Reference) {
+      lineage.push(elementType);
+
+      const referencedElement = this.get(elementType.Reference.ref.id);
+
+      elementType = referencedElement ? referencedElement.element_type : null;
+    }
+
+    if(elementType) {
+      lineage.push(elementType);
+    }
+
+    return lineage;
   }
 }
 

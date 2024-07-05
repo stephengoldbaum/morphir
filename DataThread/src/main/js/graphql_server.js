@@ -49,21 +49,13 @@ function runGraphQL() {
       // element: (_, { id }) => elementResolver.get(id),
       element: (_, { id }) => {
         const element = elementResolver.get(id);
-        const elementType = typeResolver.get(element.id);
-        if(elementType) {
-          element.element_type = elementType.element_type;
-        }
-        return element;
+        return resolveElementType(element);
       },
       // elements: () => elementResolver.getAll(),
       elements: () => {
         const elements = elementResolver.getAll();
         return elements.map(element => {
-          const elementType = typeResolver.get(element.id);
-          if(elementType) {
-            element.element_type = elementType.element_type;
-          }
-          return element;
+          return resolveElementType(element);
         });
       },
       baseType: (_, { id }) => elementResolver.getBaseType(id),
@@ -76,17 +68,32 @@ function runGraphQL() {
     
   };
 
+  function resolveElementType(element) {
+    const elementType = typeResolver.get(element.id);
+
+    if(elementType) {
+      element.element_type = elementType.element_type;
+    }
+
+    if(element.element_type) {
+      element.lineage = elementResolver.getElementLineage(element);
+    }
+    
+    return element;
+  }
+
   // Define the GraphQL schema
     const pathToGrammar = path.join(__dirname, '..', 'resources');
     const elementSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'Element.graphqls'), 'utf8');
     const elementInfoSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'ElementInfo.graphqls'), 'utf8');
+    const elementLineageFile = fs.readFileSync(path.join(pathToGrammar, 'ElementLineage.graphqls'), 'utf8');
     const datasetSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'Dataset.graphqls'), 'utf8');
     const querySchemaFile = fs.readFileSync(path.join(pathToGrammar, 'DataThread.graphqls'), 'utf8');
     const typeSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'Type.graphqls'), 'utf8');
     const allSchemaFile = fs.readFileSync(path.join(pathToGrammar, 'All.graphqls'), 'utf8');
 
   const schema = makeExecutableSchema({
-    typeDefs: [elementSchemaFile, elementInfoSchemaFile, datasetSchemaFile, querySchemaFile, typeSchemaFile, allSchemaFile],
+    typeDefs: [elementSchemaFile, elementInfoSchemaFile, elementLineageFile, datasetSchemaFile, querySchemaFile, typeSchemaFile, allSchemaFile],
     resolvers: resolvers
   });
   

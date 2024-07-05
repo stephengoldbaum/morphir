@@ -1,0 +1,3 @@
+extend type Element {
+    lineage: [ElementType]
+}
