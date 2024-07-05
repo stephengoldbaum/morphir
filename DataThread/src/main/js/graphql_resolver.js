@@ -78,8 +78,12 @@ class ElementResolver {
     return element;
   }
 
-  getBaseType(id) {
+  findBaseType(id) {
     const element = this.get(id);
+    return element ? getBaseType(element) : null;
+  }
+
+  getBaseType(element) {
     var elementType = element.element_type;
 
     while(elementType && element.Reference) {
@@ -198,11 +202,13 @@ class TypeResolver {
   get(id) {
     var item = null;
     
-    for (const storage of this.storages) {
-      item = storage.resolveAndRead(id, "type");
+    // Reverse order to let override take precendence
+    for (let index = this.storages.length - 1; index >= 0 && !item; index--) {
+      const storage = this.storages[index];
+      item = storage.resolveAndRead(id, "element");
     }
 
-    return item;
+    return item ? item.element_type : null;
   }
 }
 

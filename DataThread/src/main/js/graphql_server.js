@@ -58,7 +58,7 @@ function runGraphQL() {
           return resolveElementType(element);
         });
       },
-      baseType: (_, { id }) => elementResolver.getBaseType(id),
+      baseType: (_, { id }) => elementResolver.findBaseType(id),
     },
     ElementType: {
       __resolveType(obj, context, info){
