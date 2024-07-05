@@ -58,7 +58,7 @@ alias ElementType = Text | Number | Date | Time | DateTime | Boolean | Enum | Re
 model Element  {
     id: ElementID;
     name: string;
-    element_type: ElementType;
+    element_type?: ElementType;
 };
 
 model ElementInfo  {
