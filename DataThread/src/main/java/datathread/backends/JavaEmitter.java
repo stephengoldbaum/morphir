@@ -3,10 +3,12 @@ package datathread.backends;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeSpec;
+import datathread.Identifier;
 import datathread.metastore.*;
 
 import javax.lang.model.element.Modifier;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -127,18 +129,21 @@ public class JavaEmitter {
     }
 
     public static void main(String[] args) {
-        final File baseDir = new File("sharing/example/metastore");
+        final Path baseDir = Path.of("DataThread","example","metastore", "automated");
+        final FileStore fileStore = new FileStore(baseDir);
+
         final Context context = new Context() {
             public Optional<Element> getElement(String elementId) {
-                Optional<Element> e = FileStore.read(baseDir, elementId, Element.class);
-                return e;
+                return Identifier.from(elementId)
+                    .flatMap(id -> fileStore.resolveAndRead(id, Element.class));
             }
         };
 
         JavaEmitter emitter = new JavaEmitter(context);
-
-        Dataset dataset = FileStore.read(baseDir, "dataset:/person:users", Dataset.class).get();
-
+        Optional<Identifier> datasetId = Identifier.from("dataset:/person:users");
+        Dataset dataset = datasetId
+                .flatMap(id -> fileStore.resolveAndRead(id, Dataset.class))
+                .orElse(null);
         System.out.println(emitter.handleDataset(dataset));
 
 //        FileStore.readAllDatasets(baseDir).stream()

@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import datathread.Indentifier;
+import datathread.Identifier;
 
 public class FileStore implements Metastore {
     Path baseDir;
@@ -20,7 +20,7 @@ public class FileStore implements Metastore {
         this.baseDir = baseDir;
     }
 
-    public <T> Optional<T> resolveAndRead(Indentifier id, Class<T> tipe) {
+    public <T> Optional<T> resolveAndRead(Identifier id, Class<T> tipe) {
         Path filePath = resolveForID(this.baseDir, id, tipe);
         return FileStore.loadFromFile(filePath, tipe);
     }
@@ -44,7 +44,7 @@ public class FileStore implements Metastore {
         return results;
     }
 
-    public <T> Optional<String> write(Indentifier id, Class<T> tipe, T data) {
+    public <T> Optional<String> write(Identifier id, Class<T> tipe, T data) {
         Path absPath = resolveForID(this.baseDir, id, tipe);
 
         try {
@@ -70,8 +70,8 @@ public class FileStore implements Metastore {
         return tipe.getSimpleName().replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
     }
 
-    public static Path resolveForID(Path baseDir, Indentifier id, Class tipe) {
-        return resolveFile(baseDir, id.schema(), id.domain(), id.name(), classNameToFileStyle(tipe));
+    public static Path resolveForID(Path baseDir, Identifier id, Class tipe) {
+        return resolveFile(baseDir, id.scheme(), id.domain(), id.name(), classNameToFileStyle(tipe));
     }
 
     public static Path resolveFile(Path baseDir, String schema, String[] domain, String name, String fileSuffix) {
@@ -96,7 +96,7 @@ public class FileStore implements Metastore {
 
     public static void main(String[] args) {
         // Create a FileStore instance with the base directory
-        Path baseDir = Path.of("example/metastore");
+        Path baseDir = Path.of("DataThread","example","metastore","automated");
         FileStore fileStore = new FileStore(baseDir);
 
         // Test the findAllAndRead method
@@ -104,5 +104,15 @@ public class FileStore implements Metastore {
         for (Element result : results) {
             System.out.println(result);
         }
+
+        // resolveForID
+        String scheme = "scheme";
+        String[] domain = {"domain"};
+        String name = "name";
+        Identifier id = new Identifier(scheme, domain, name);
+
+        Path actual = FileStore.resolveForID(baseDir, id, Element.class).normalize();
+
+        System.out.println(actual);
     }
 }
