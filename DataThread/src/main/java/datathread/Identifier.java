@@ -31,4 +31,12 @@ public class Identifier {
             return Optional.empty();
         }
     }
+
+    public static String toString(Identifier id) {
+        String scheme = id.scheme();
+        String domain = String.join("/", id.domain());
+        String name = id.name();
+
+        return scheme + ":" + domain + ":" + name;
+    }
 }

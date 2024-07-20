@@ -4,24 +4,18 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeSpec;
 import datathread.Identifier;
-import datathread.metastore.*;
+import datathread.metastore.Metastore;
 
 import javax.lang.model.element.Modifier;
-import java.io.File;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JavaEmitter {
-    public static interface Context {
-        public Optional<Element> getElement(String elementId);
-    }
+    private final Metastore  context;
 
-    private final Context context;
-
-    public JavaEmitter(Context context) {
+    public JavaEmitter(Metastore context) {
         this.context = context;
     }
 
@@ -29,7 +23,7 @@ public class JavaEmitter {
         String name = nameToJava(dataset.getName());
         List<FieldSpec> fields =
             dataset.getFields().stream()
-                .map(f -> handleField(this.context, f))
+                .map(field -> handleField(field))
                 .collect(Collectors.toList());
 
         TypeSpec javaClass = TypeSpec.classBuilder(name)
@@ -40,12 +34,16 @@ public class JavaEmitter {
         return javaClass;
     }
 
-    public FieldSpec handleField(Context context, Field field) {
+    public FieldSpec handleField(Field field) {
         String name = field.getName();
-        Optional<Element> element = context.getElement(field.getElement());
+        Optional<Element> element =
+            Identifier.from(field.getElement())
+                .flatMap(id -> context.read(id, Element.class))
+                .map(Element.class::cast); // Cast the Optional<Object> to Optional<Element>
+
         ClassName className = element
-                .map( e -> handleElementType(e.getElementType()))
-                .orElse(ClassName.get(Object.class));
+            .map(e -> handleElementType(e.getElementType()))
+            .orElse(ClassName.get(Object.class));
 
         return FieldSpec.builder(className, name)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -126,28 +124,5 @@ public class JavaEmitter {
 
     public static String capitalize(String s) {
         return s.substring(0,1).toUpperCase() + s.substring(1);
-    }
-
-    public static void main(String[] args) {
-        final Path baseDir = Path.of("DataThread","example","metastore", "automated");
-        final FileStore fileStore = new FileStore(baseDir);
-
-        final Context context = new Context() {
-            public Optional<Element> getElement(String elementId) {
-                return Identifier.from(elementId)
-                    .flatMap(id -> fileStore.resolveAndRead(id, Element.class));
-            }
-        };
-
-        JavaEmitter emitter = new JavaEmitter(context);
-        Optional<Identifier> datasetId = Identifier.from("dataset:/person:users");
-        Dataset dataset = datasetId
-                .flatMap(id -> fileStore.resolveAndRead(id, Dataset.class))
-                .orElse(null);
-        System.out.println(emitter.handleDataset(dataset));
-
-//        FileStore.readAllDatasets(baseDir).stream()
-//                .map(emitter::handleDataset)
-//                .forEach(System.out::println);
     }
 }

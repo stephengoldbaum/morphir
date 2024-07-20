@@ -1,5 +1,8 @@
 package datathread.metastore;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import datathread.Identifier;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,10 +12,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import datathread.Identifier;
-
 public class FileStore implements Metastore {
     Path baseDir;
 
@@ -20,12 +19,12 @@ public class FileStore implements Metastore {
         this.baseDir = baseDir;
     }
 
-    public <T> Optional<T> resolveAndRead(Identifier id, Class<T> tipe) {
+    public <T> Optional<T> read(Identifier id, Class<T> tipe) {
         Path filePath = resolveForID(this.baseDir, id, tipe);
         return FileStore.loadFromFile(filePath, tipe);
     }
 
-    public <T> List<T> findAllAndRead(Class<T> metaType) {
+    public <T> List<T> readAll(Class<T> metaType) {
         String fileSuffix = FileStore.classNameToFileStyle(metaType);
         List<T> results = Collections.emptyList();
 
@@ -76,7 +75,7 @@ public class FileStore implements Metastore {
 
     public static Path resolveFile(Path baseDir, String schema, String[] domain, String name, String fileSuffix) {
         Path path = Path.of(".", domain).resolve(name + "." + fileSuffix + ".json");
-        Path absPath = baseDir.resolve(schema).resolve(path);
+        Path absPath = baseDir.resolve(path);
         return absPath;
     }
 
@@ -92,27 +91,5 @@ public class FileStore implements Metastore {
             e.printStackTrace();
             return  Optional.empty();
         }
-    }
-
-    public static void main(String[] args) {
-        // Create a FileStore instance with the base directory
-        Path baseDir = Path.of("DataThread","example","metastore","automated");
-        FileStore fileStore = new FileStore(baseDir);
-
-        // Test the findAllAndRead method
-        List<Element> results = fileStore.findAllAndRead(Element.class);
-        for (Element result : results) {
-            System.out.println(result);
-        }
-
-        // resolveForID
-        String scheme = "scheme";
-        String[] domain = {"domain"};
-        String name = "name";
-        Identifier id = new Identifier(scheme, domain, name);
-
-        Path actual = FileStore.resolveForID(baseDir, id, Element.class).normalize();
-
-        System.out.println(actual);
     }
 }

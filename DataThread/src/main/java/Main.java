@@ -1,52 +1,63 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ms.data.casc.manifest.model.SystemDataElement;
 import com.squareup.javapoet.TypeSpec;
-import datathread.metastore.Element;
+import datathread.Identifier;
+import datathread.backends.JavaEmitter;
+import datathread.metastore.FileStore;
+import datathread.metastore.Metastore;
+import datathread.metastore.Router;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.io.File;
-
-import javax.lang.model.element.Modifier;
+import java.util.Map;
+import java.util.Optional;
 
 public class Main {
+
     public static void main(String[] args) {
-        String json = null;
-        try {
-            System.out.println(new File(".").getAbsolutePath());
-            File baseDir = new File("sharing/example/metastore");
-            String id = "element:person:active";
-            File file = new File(baseDir, resolveForID(id).getPath());
 
-            json = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        ObjectMapper mapper = new ObjectMapper();
+        // Create separate stores for Dataset, Element, and ElementInfo
+        Metastore exampleMetastore = new FileStore(Paths.get("DataThread", "example", "metastore", "automated"));
+        final Metastore buildMetastore = new FileStore(Paths.get("DataThread", "build", "metastore", "automated"));
 
-        try {
-            Element element = mapper.readValue(json, Element.class);
-            TypeSpec java = elementToJava(element);
-            System.out.println(java);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Setup the router
+        final Router router = new Router(Map.of(
+                Element.class, exampleMetastore
+                , ElementInfo.class, buildMetastore
+                , Dataset.class, exampleMetastore
+        ));
+
+        // Setup the test domain and subject
+        final String[] domain = {"person"};
+        final Identifier id = new Identifier("element", domain, "age");
+
+        // Read Age Element from examples
+        Optional<Element> age = router.read(id, Element.class);
+        System.out.println("Element: " + age);
+
+        // Augment Age Element by saving a related ElementInfo
+        ElementInfo info = new ElementInfo();
+        info.setId(Identifier.toString(id));
+        info.setDescription("The age of the person in years");
+        info.setDisplayName("Age");
+        Optional<String> response = router.write(id, ElementInfo.class, info);
+        System.out.println("Response: " + response);
+
+        // Read it back
+        Optional<ElementInfo> outfo = router.read(id, ElementInfo.class);
+        System.out.println("OUtfo: " + outfo);
+
+        // Write to Java
+        JavaEmitter javaEmitter = new JavaEmitter(router);
+        Optional<TypeSpec> java = age.map(e -> javaEmitter.handleElement(e));
+        System.out.println("Element Java:");
+        System.out.println(java);
+
+        // Again with a Dataset
+        Optional<Dataset> people = router.read(new Identifier("dataset", domain, "people"), Dataset.class);
+        Optional<TypeSpec> javaD = people
+                .map(o -> javaEmitter.handleDataset(o));
+        System.out.println();
+        System.out.println("Dataset Java:");
+        System.out.println(javaD);
     }
 
-    public static TypeSpec elementToJava(Element element) {
-        TypeSpec java = TypeSpec.classBuilder(element.getName())
-            .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-            .build();
-
-        return java;
-    }
-
-    public static File resolveForID(String id) {
-        String[] parts = id.split(":");
-        return resolveFile(parts[0], parts[1], parts[2]);
-    }
-
-    public static File resolveFile(String schemaType, String domain, String name) {
-        return new File(domain, name + "." + schemaType + ".json");
-    }
 }
