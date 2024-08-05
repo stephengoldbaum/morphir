@@ -79,7 +79,12 @@ function urnToFile(baseDir, urn, typ) {
 }
 
 function unescape(str) {
-  return str.replaceAll("%20", " ");
+  return str
+    .replaceAll("%20", " ")
+//    .replaceAll("/", "%2F")
+    .replaceAll(":","%3A")
+    .replaceAll("?","%3F")
+    ;
 }
 
 /**

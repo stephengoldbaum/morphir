@@ -27,11 +27,16 @@ public class Router implements Metastore {
             .orElse(Collections.emptyList());
     }
 
-    public <T> Optional<String> write(Identifier id, Class<T> tipe, T data) {
+    public <T> Optional<String> write(Identifier id, T data) {
+        Class tipe = data.getClass();
         Metastore handler = this.routes.get(tipe);
 
         return (handler == null) 
             ? Optional.of("No storage handler for type " + tipe)
-            : handler.write(id, tipe, data);
+            : handler.write(id, data);
+    }
+
+    public Optional<Metastore> getRoute(Class tipe) {
+        return Optional.ofNullable(this.routes.get(tipe));
     }
 }

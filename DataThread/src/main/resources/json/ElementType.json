@@ -1,0 +1,33 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "ElementType.json",
+    "anyOf": [
+        {
+            "$ref": "Text.json"
+        },
+        {
+            "$ref": "Number.json"
+        },
+        {
+            "$ref": "Date.json"
+        },
+        {
+            "$ref": "Time.json"
+        },
+        {
+            "$ref": "DateTime.json"
+        },
+        {
+            "$ref": "Boolean.json"
+        },
+        {
+            "$ref": "Enum.json"
+        },
+        {
+            "$ref": "Record.json"
+        },
+        {
+            "$ref": "Reference.json"
+        }
+    ]
+}

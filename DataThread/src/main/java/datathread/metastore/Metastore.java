@@ -11,5 +11,5 @@ public interface Metastore {
 
   public <T> List<T> readAll(Class<T> tipe);
 
-  public <T> Optional<String> write(Identifier id, Class<T> tipe, T data);
+  public <T> Optional<String> write(Identifier id, T data);
 }

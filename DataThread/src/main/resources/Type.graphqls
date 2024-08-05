@@ -1,4 +1,0 @@
-type Type {
-  id: ID!
-  element_type: ElementType!
-}

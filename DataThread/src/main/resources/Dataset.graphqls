@@ -5,10 +5,11 @@ type Dataset {
   fields: [Field!]!
 }
 
-type Field {
-  name: String!
-  element: Element!
-  optional: Boolean
+extend type Field {
   key: Boolean
 }
 
+type Query {
+  dataset: [Dataset!]!
+  dataset(id: ID!): Dataset
+}

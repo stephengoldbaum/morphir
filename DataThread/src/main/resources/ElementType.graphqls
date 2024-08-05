@@ -1,33 +1,30 @@
-type Element {
-  id: ID!
-  name: String!
-  element_type: ElementType!
-  info: ElementInfo
+extend type Element {
+  element_type: ElementType
 }
 
 union ElementType = TextType | NumberType | ReferenceType | DateType | TimeType | DateTimeType | BooleanType | EnumType | RecordType
 
 scalar Date
 
-type DateType { 
+type DateType {
   Date : Date
 }
 
 scalar Time
 
-type TimeType { 
+type TimeType {
   Time : Time
 }
 
 scalar DateTime
 
-type DateTimeType { 
+type DateTimeType {
   DateTime : DateTime
 }
 
 scalar Bool
 
-type BooleanType { 
+type BooleanType {
   Boolean : Bool
 }
 

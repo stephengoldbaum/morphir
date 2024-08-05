@@ -1,9 +1,10 @@
 {
     "id": "element:person:age",
-    "name": "age",
+    "name": "Age",
     "element_type": {
         "Number": {
-            "minimum": 0
+            "minimum": 0,
+            "precision": 0
         }
     }
 }

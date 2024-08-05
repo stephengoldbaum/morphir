@@ -1,0 +1,28 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "Dataset.json",
+    "type": "object",
+    "properties": {
+        "id": {
+            "$ref": "DatasetID.json"
+        },
+        "name": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        },
+        "fields": {
+            "type": "array",
+            "items": {
+                "$ref": "Field.json"
+            }
+        }
+    },
+    "required": [
+        "id",
+        "name",
+        "version",
+        "fields"
+    ]
+}

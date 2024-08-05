@@ -1,0 +1,13 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "Record.json",
+    "type": "object",
+    "properties": {
+        "fields": {
+            "$ref": "Field.json"
+        }
+    },
+    "required": [
+        "fields"
+    ]
+}

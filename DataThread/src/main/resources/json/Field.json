@@ -1,0 +1,21 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "Field.json",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "element": {
+            "$ref": "ElementID.json"
+        },
+        "optional": {
+            "type": "boolean"
+        }
+    },
+    "required": [
+        "name",
+        "element",
+        "optional"
+    ]
+}

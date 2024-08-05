@@ -1,0 +1,13 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "TextConstraints.json",
+    "type": "object",
+    "properties": {
+        "min_length": {
+            "type": "integer"
+        },
+        "max_length": {
+            "type": "integer"
+        }
+    }
+}

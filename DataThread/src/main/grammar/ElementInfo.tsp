@@ -1,10 +1,10 @@
 import "./Element.tsp";
-
-namespace DataThread.Grammar.ElementInfo;
-
+import "@typespec/json-schema";
+using TypeSpec.JsonSchema;
 using DataThread.Grammar.Element;
 
-scalar DatasetID extends url;
+@jsonSchema
+namespace DataThread.Grammar.ElementInfo;
 
 model ElementInfo  {
     id: ElementID;

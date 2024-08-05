@@ -3,9 +3,9 @@
     "name":"Integer",
     "element_type": {
         "Number" : {
-            "minimum" : "-2147483647",
-            "maximum" : "2147483647",
-            "precision" : "0"
+            "minimum" : -2147483648,
+            "maximum" : 2147483647,
+            "precision" : 0
         }
     }
 }
