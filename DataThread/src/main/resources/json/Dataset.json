@@ -17,6 +17,9 @@
             "items": {
                 "$ref": "Field.json"
             }
+        },
+        "element": {
+            "$ref": "ElementID.json"
         }
     },
     "required": [

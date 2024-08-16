@@ -7,7 +7,7 @@ import datathread.annotations.URN;
 import datathread.grammar.*;
 import datathread.grammar.Number;
 import datathread.metastore.Metastore;
-import datathread.metastore.MetastoreCLIProcessor;
+import datathread.metastore.MetastoreFactory;
 
 import javax.lang.model.element.Modifier;
 import java.nio.file.Path;
@@ -234,7 +234,7 @@ public TypeSpec handleElement(Element element) {
     }
 
     public static void main(String[] args) {
-        Metastore metastore = MetastoreCLIProcessor.getInputMetastore(args).orElseThrow();
+        Metastore metastore = MetastoreFactory.getInputMetastore(args).orElseThrow();
 
         // Create a JavaEmitter with the FileStore
         JavaEmitter javaEmitter = new JavaEmitter(metastore);
@@ -243,7 +243,7 @@ public TypeSpec handleElement(Element element) {
         List<JavaFile> javaFiles = JavaEmitter.process(metastore);
 
         // Write the JavaFiles to the output directory
-        Path outputFolder = MetastoreCLIProcessor.getOutputPath(args)
+        Path outputFolder = MetastoreFactory.getOutputPath(args)
                 .map(path -> path.toAbsolutePath())
                 .orElse(Paths.get("build").toAbsolutePath());
         System.out.println("JavaEmitter output folder: " + outputFolder);

@@ -1,0 +1,15 @@
+type Dataset {
+  id: ID!
+  name: String!
+  version: Int!
+  fields: [Field!]!
+}
+
+extend type Field {
+  key: Boolean
+}
+
+type Query {
+  datasets: [Dataset!]!
+  dataset(id: ID!): Dataset
+}

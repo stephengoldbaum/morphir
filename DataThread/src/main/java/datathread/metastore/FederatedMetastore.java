@@ -31,4 +31,8 @@ public class FederatedMetastore implements Metastore {
     public <T> Optional<String> write(Identifier id, T data) {
         return Optional.of("Write is not supported for FederatedMetastore.");
     }
+
+    public static FederatedMetastore newInstance(List<Metastore> delegates) {
+        return new FederatedMetastore(delegates);
+    }
 }

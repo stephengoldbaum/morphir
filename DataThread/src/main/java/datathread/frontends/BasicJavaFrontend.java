@@ -5,7 +5,7 @@ import datathread.JavaUtils;
 import datathread.grammar.*;
 import datathread.metastore.FileMetastore;
 import datathread.metastore.Metastore;
-import datathread.metastore.MetastoreCLIProcessor;
+import datathread.metastore.MetastoreFactory;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -87,7 +87,7 @@ public class BasicJavaFrontend {
     }
 
     public static void main(String[] args) {
-        Path output = MetastoreCLIProcessor.getOutputPath(args).orElse(Path.of("build", "metastore"));
+        Path output = MetastoreFactory.getOutputPath(args).orElse(Path.of("build", "metastore"));
         Metastore metastore = new FileMetastore(output);
         int start = 0;
         int end = args.length;

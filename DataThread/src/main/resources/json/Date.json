@@ -1,5 +1,5 @@
 {
-    "type": "string",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "Date.json"
+    "$id": "Date.json",
+    "type": "string"
 }

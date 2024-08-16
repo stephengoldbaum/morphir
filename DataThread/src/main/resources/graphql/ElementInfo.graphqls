@@ -1,0 +1,10 @@
+type ElementInfo {
+  id: ID!
+  description: String
+  display_name: String
+  short_display_name: String
+}
+
+extend type Element {
+  info: ElementInfo
+}

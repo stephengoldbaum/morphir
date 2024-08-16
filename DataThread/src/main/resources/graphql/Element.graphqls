@@ -1,0 +1,9 @@
+type Element {
+  id: ID!
+  name: String!
+}
+
+type Query {
+  elements: [Element!]!
+  element(id: ID!): Element
+}

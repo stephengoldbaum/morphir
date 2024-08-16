@@ -91,8 +91,8 @@ function runGraphQL() {
       , fs.readFileSync(path.join(pathToGrammar, 'ElementLineage.graphqls'), 'utf8')
       , fs.readFileSync(path.join(pathToGrammar, 'ElementType.graphqls'), 'utf8')
       , fs.readFileSync(path.join(pathToGrammar, 'Dataset.graphqls'), 'utf8')
-      , fs.readFileSync(path.join(pathToGrammar, 'DataThread.graphqls'), 'utf8')
-      , fs.readFileSync(path.join(pathToGrammar, 'All.graphqls'), 'utf8')
+//      , fs.readFileSync(path.join(pathToGrammar, 'DataThread.graphqls'), 'utf8')
+//      , fs.readFileSync(path.join(pathToGrammar, 'All.graphqls'), 'utf8')
       ]
 
   const schema = makeExecutableSchema({
@@ -122,4 +122,5 @@ function runGraphQL() {
   // Start the server at port
   app.listen(4000)
   console.log("Running a GraphQL API server at http://localhost:4000/graphql")
+  console.log("Running a GraphiQL UI at http://localhost:4000/")
 }
