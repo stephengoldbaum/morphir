@@ -1,4 +1,6 @@
 import "./Element.tsp";
+import "./Scalars.tsp";
+
 import "@typespec/json-schema";
 using TypeSpec.JsonSchema;
 using DataThread.Grammar.Element;
@@ -8,7 +10,7 @@ namespace DataThread.Grammar.ElementInfo;
 
 model ElementInfo  {
     id: ElementID;
-    description?: string;
-    display_name?: string;
-    short_display_name?: string;
+    description?: Description;
+    display_name?: DisplayName;
+    short_display_name?: ShortDisplayName;
 };

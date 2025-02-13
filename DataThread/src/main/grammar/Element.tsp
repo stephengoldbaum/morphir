@@ -1,4 +1,6 @@
 import "./ElementType.tsp";
+import "./Scalars.tsp";
+
 import "@typespec/json-schema";
 using TypeSpec.JsonSchema;
 
@@ -10,6 +12,6 @@ scalar ElementID extends string;
 
 model Element  {
     id: ElementID;
-    name: string;
+    name: Name;
     element_type: ElementType;
 };

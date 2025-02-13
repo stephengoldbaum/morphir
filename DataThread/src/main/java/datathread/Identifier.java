@@ -10,9 +10,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Identifier {
-    private final String scheme;
-    private final String[] domain;
-    private final String name;
+    public final String scheme;
+    public final String[] domain;
+    public final String name;
 
     public Identifier(String scheme, String[] domain, String name) {
         this.scheme = scheme;
@@ -90,15 +90,5 @@ public class Identifier {
 
     public static String encodeWithUTF8(String s) {
         return URLEncoder.encode(s, StandardCharsets.UTF_8);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(Identifier.from("scheme:/domain1/domain2:name"));
-        System.out.println(Identifier.from(URI.create(encodeWithUTF8("scheme:/domain1/foo & bah:name"))));
-        System.out.println(Identifier.from(URI.create(encodeWithUTF8("scheme:domain1/foo & bah:name"))));
-        System.out.println(Identifier.from("scheme:/domain1/foo & bah:name"));
-        System.out.println(new Identifier("scheme", new String[] {"domain1", "foo"}, "name"));
-        System.out.println(new Identifier("scheme", new String[] {"domain1", "foo & bah"}, "name"));
-        System.out.println(new Identifier("scheme", new String[] {"/domain1", "foo & bah"}, "name"));
     }
 }

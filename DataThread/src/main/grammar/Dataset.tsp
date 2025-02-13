@@ -1,4 +1,6 @@
 import "./ElementType.tsp";
+import "./Scalars.tsp";
+
 import "@typespec/json-schema";
 using TypeSpec.JsonSchema;
 using DataThread.Grammar.Element;
@@ -11,7 +13,7 @@ scalar DatasetID extends string;
 
 model Dataset {
   id: DatasetID;
-  name: string;
-  version: string;
+  name: Name;
+  version: Version;
   fields: Array<Field>;
 }
