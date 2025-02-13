@@ -1,5 +1,4 @@
 package datathread.metastore;
-
 import datathread.Identifier;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import datathread.grammar.Element;
+import org.mockito.Mock;
 
 public class FileStoreTest {
     private final Path basedir = Path.of(".");
@@ -20,7 +20,7 @@ public class FileStoreTest {
 
         Path actual = FileMetastore.resolveForID(basedir, id, Element.class);
 
-        final Path expected = Path.of(".", domain[0], name + ".element.json");
+        final Path expected = Path.of(".\\.", domain[0], name + ".element.json");
         assertEquals(expected, actual);
     }
 
@@ -33,7 +33,8 @@ public class FileStoreTest {
 
         Path actual = FileMetastore.resolveFile(basedir, schema, domain, name, suffix);
 
-        final Path expected = Paths.get(".", domain[0], name + "." + suffix + ".json");
+        final Path expected = Paths.get(".\\.", domain[0], name + "." + suffix + ".json");
         assertEquals(expected, actual);
     }
+
 }

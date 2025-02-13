@@ -1,10 +1,1 @@
-{
-    "id": "element:person:age",
-    "name": "Age",
-    "element_type": {
-        "Number": {
-            "minimum": 0,
-            "precision": 0
-        }
-    }
-}
+{"id":"element:person:age","name":"Age"}

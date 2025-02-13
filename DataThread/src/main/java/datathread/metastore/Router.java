@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Router implements Metastore {
     private final Map<Class, Metastore> routes;
@@ -34,6 +35,18 @@ public class Router implements Metastore {
         return (handler == null) 
             ? Optional.of("No storage handler for type " + tipe)
             : handler.write(id, data);
+    }
+
+    @Override
+    public Optional<String> delete(Identifier id) {
+        String result = this.routes.values().stream()
+                .map(delegate -> delegate.delete(id))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.joining("\n"));
+
+        return result.isEmpty() ? Optional.empty() : Optional.of(result);
     }
 
     public Optional<Metastore> getRoute(Class tipe) {

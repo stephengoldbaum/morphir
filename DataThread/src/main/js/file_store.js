@@ -80,10 +80,10 @@ function urnToFile(baseDir, urn, typ) {
 
 function unescape(str) {
   return str
-    .replaceAll("%20", " ")
+    // .replaceAll("%20", " ")
 //    .replaceAll("/", "%2F")
-    .replaceAll(":","%3A")
-    .replaceAll("?","%3F")
+//     .replaceAll(":","%3A")
+//     .replaceAll("?","%3F")
     ;
 }
 
@@ -137,6 +137,28 @@ function ensurePath(baseDir, path) {
   return parent;
 }
 
+/**
+ * Ensures that a directory path exists, creating any missing directories along the way.
+ *
+ * @param {string} baseDir - The base directory for file storage.
+ * @param {string} path - The directory path to ensure.
+ * @returns {Storage} - The Storage for the final directory path.
+ */
+export function ensureStorage(baseDir, path) {
+    const glossaryFolder = path.resolve(baseDir, path);
+    const metastore = path.resolve(glossaryFolder, "metastore");
+    const automatedFolder = path.resolve(metastore, "automated");
+
+    // Recursively delete baseDir
+    if(fs.existsSync(automatedFolder)) {
+        fsExtra.emptyDirSync(automatedFolder);
+    }
+
+    fs.mkdirSync(automatedFolder, { recursive: true });
+    console.log("Cleaned " + automatedFolder);
+
+    return new Storage(automatedFolder);
+}
 
 //////// Module ///////////
 module.exports = {

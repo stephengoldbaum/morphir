@@ -200,7 +200,7 @@ class TypeResolver {
     // Reverse order to let override take precendence
     for (let index = this.storages.length - 1; index >= 0 && !item; index--) {
       const storage = this.storages[index];
-      item = storage.resolveAndRead(id, "element");
+      item = storage.resolveAndRead(id, "element_type");
     }
 
     return item ? item.element_type : null;
