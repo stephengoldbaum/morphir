@@ -1,0 +1,61 @@
+// Example FAIR specification for Result type
+// Demonstrates error handling and type constraints
+
+def Result<E, T> {
+  variant {
+    Ok {
+      value: T
+    }
+    Err {
+      error: E
+    }
+  }
+}
+
+def ResultOperations<E, T> {
+  // Map operation
+  def map<U> {
+    input: Result<E, T>
+    transform: Function<T, U>
+    returns: Result<E, U>
+  }
+
+  // Map error operation
+  def mapError<F> {
+    input: Result<E, T>
+    transform: Function<E, F>
+    returns: Result<F, T>
+  }
+
+  // Chain operations
+  def andThen<U> {
+    input: Result<E, T>
+    next: Function<T, Result<E, U>>
+    returns: Result<E, U>
+  }
+}
+
+rules {
+  // Pattern matching exhaustiveness
+  ResultPatternMatch {
+    forall match: PatternMatch {
+      where subject: Result<E, T> {
+        must cover Ok, Err
+      }
+    }
+  }
+
+  // Error type preservation
+  ErrorPreservation {
+    forall map: ResultOperations.map {
+      if input is Err<E> then result is Err<E>
+    }
+  }
+
+  // Success type transformation
+  SuccessTransformation {
+    forall map: ResultOperations.map {
+      if input is Ok<T> then result is Ok<U>
+    }
+  }
+}

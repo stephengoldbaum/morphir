@@ -1,0 +1,78 @@
+// Type System Operations
+// Defines operations that can be performed on types
+
+def TypeOperations {
+  // Collect all type variables in a type expression
+  def collectVariables {
+    input: Type
+    returns: Set<Name>
+  }
+
+  // Collect all type references in a type expression
+  def collectReferences {
+    input: Type
+    returns: Set<FQName>
+  }
+
+  // Substitute type variables with concrete types
+  def substituteVariables {
+    input: Type
+    substitutions: Map<Name, Type>
+    returns: Type
+  }
+
+  // Check if a type is valid in a given context
+  def validateType {
+    input: Type
+    context: TypeContext
+    returns: Result<TypeError, Unit>
+  }
+}
+
+def TypeContext {
+  // Available types in scope
+  availableTypes: Map<FQName, Specification>
+  // Type variables in scope
+  typeVariables: Set<Name>
+}
+
+def TypeError {
+  variant {
+    UndefinedType {
+      typeName: FQName
+    }
+    UndefinedTypeVariable {
+      name: Name
+    }
+    TypeMismatch {
+      expected: Type
+      actual: Type
+    }
+    InvalidTypeApplication {
+      type: Type
+      arguments: List<Type>
+    }
+  }
+}
+
+rules {
+  // Substitution must preserve type structure
+  SubstitutionPreservation {
+    forall type: Type {
+      forall subst: Map<Name, Type> {
+        require structurallyValid(substituteVariables(type, subst))
+      }
+    }
+  }
+
+  // Type validation must be consistent
+  ValidationConsistency {
+    forall type: Type {
+      forall ctx1, ctx2: TypeContext {
+        where ctx1.availableTypes == ctx2.availableTypes {
+          require validateType(type, ctx1) == validateType(type, ctx2)
+        }
+      }
+    }
+  }
+}

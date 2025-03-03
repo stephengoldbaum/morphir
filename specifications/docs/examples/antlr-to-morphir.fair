@@ -1,0 +1,218 @@
+// FAIR specification for ANTLR to Morphir IR compiler
+// This specification defines the mapping between ANTLR parse trees and Morphir IR
+
+// First, define ANTLR parse tree structure
+def ParseTree {
+  variant {
+    Rule {
+      name: String
+      children: List<ParseTree>
+    }
+    Token {
+      type: String
+      text: String
+    }
+  }
+}
+
+// Define compilation context to track scope and types
+def CompilationContext {
+  currentModule: FQName
+  typeScope: Map<String, Type>
+  valueScope: Map<String, Value>
+  errors: List<CompileError>
+}
+
+def CompileError {
+  variant {
+    UnknownType {
+      typeName: String
+      location: SourceLocation
+    }
+    UndefinedVariable {
+      name: String
+      location: SourceLocation
+    }
+    TypeMismatch {
+      expected: Type
+      actual: Type
+      location: SourceLocation
+    }
+  }
+}
+
+def SourceLocation {
+  line: Int
+  column: Int
+  source: String
+}
+
+// Define compilation rules
+def CompilationRule<T> {
+  pattern: ParseTree
+  output: T
+  context: CompilationContext
+}
+
+// Example rules for a simple expression language
+def ExpressionRules {
+  // Binary operation rule
+  def binaryOp {
+    pattern: Rule {
+      name: "expression"
+      children: [
+        left: ParseTree,
+        op: Token { type: "OPERATOR" },
+        right: ParseTree
+      ]
+    }
+    
+    returns: Value {
+      // Map common operators to Morphir SDK functions
+      variant {
+        Apply {
+          function: Reference {
+            fqName: operatorToFQName(op.text)
+          }
+          arguments: [
+            compileExpression(left),
+            compileExpression(right)
+          ]
+        }
+      }
+    }
+  }
+
+  // Literal rule
+  def literal {
+    pattern: Rule {
+      name: "literal"
+      children: [
+        value: Token { type: oneOf("INT", "FLOAT", "STRING", "BOOL") }
+      ]
+    }
+
+    returns: Value {
+      variant {
+        Literal {
+          value: parseLiteral(value)
+        }
+      }
+    }
+  }
+
+  // Variable reference rule
+  def variable {
+    pattern: Rule {
+      name: "identifier"
+      children: [
+        name: Token { type: "ID" }
+      ]
+    }
+
+    returns: Value {
+      variant {
+        Variable {
+          name: Name { segments: [name.text] }
+        }
+      }
+    }
+  }
+}
+
+// Type inference rules
+rules {
+  // Ensure binary operations have compatible types
+  BinaryOpTypes {
+    forall op: ExpressionRules.binaryOp {
+      exists leftType: Type = typeOf(op.left)
+      exists rightType: Type = typeOf(op.right)
+      
+      match op.operator {
+        case "+" | "-" | "*" | "/" =>
+          require leftType == rightType
+          require leftType in [NumberType, FloatType]
+        case "==" | "!=" =>
+          require leftType == rightType
+        case "<" | "<=" | ">" | ">=" =>
+          require leftType in [NumberType, FloatType, StringType]
+      }
+    }
+  }
+
+  // Type preservation through compilation
+  TypePreservation {
+    forall expr: ParseTree {
+      exists morphirType: Type = typeOf(compileExpression(expr))
+      exists antlrType: Type = inferAntlrType(expr)
+      
+      require isCompatible(morphirType, antlrType)
+    }
+  }
+}
+
+// Helper functions
+def operatorToFQName(operator: String): FQName {
+  // Map operators to Morphir SDK functions
+  match operator {
+    case "+" => FQName {
+      packagePath: ["Morphir", "SDK"],
+      modulePath: ["Basics"],
+      localName: ["add"]
+    }
+    case "-" => FQName {
+      packagePath: ["Morphir", "SDK"],
+      modulePath: ["Basics"],
+      localName: ["subtract"]
+    }
+    // ... other operators
+  }
+}
+
+def parseLiteral(token: Token): Literal {
+  match token.type {
+    case "INT" => WholeNumberLiteral { 
+      value: parseInt(token.text) 
+    }
+    case "FLOAT" => FloatLiteral { 
+      value: parseFloat(token.text) 
+    }
+    case "STRING" => StringLiteral { 
+      value: token.text 
+    }
+    case "BOOL" => BoolLiteral { 
+      value: parseBool(token.text) 
+    }
+  }
+}
+
+// Main compilation entry point
+def compile {
+  input: ParseTree
+  context: CompilationContext
+  returns: Result<CompileError, Value>
+}
+
+// Verification rules
+rules {
+  // Ensure all variables are in scope
+  VariableScope {
+    forall var: ExpressionRules.variable {
+      require var.name in context.valueScope
+    }
+  }
+
+  // Ensure all types are valid
+  TypeValidity {
+    forall type: Type {
+      require isValidType(type, context.typeScope)
+    }
+  }
+
+  // Ensure no undefined references
+  ReferenceValidity {
+    forall ref: Reference {
+      require exists(ref.fqName, context)
+    }
+  }
+}

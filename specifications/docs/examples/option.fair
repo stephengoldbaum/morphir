@@ -1,0 +1,48 @@
+// Example FAIR specification for Option type
+// Demonstrates basic variant types and pattern matching
+
+def Option<T> {
+  variant {
+    Some {
+      value: T
+    }
+    None
+  }
+}
+
+def OptionOperations<T> {
+  // Map operation
+  def map<U> {
+    input: Option<T>
+    transform: Function<T, U>
+    returns: Option<U>
+  }
+
+  // Unwrap with default
+  def withDefault {
+    input: Option<T>
+    default: T
+    returns: T
+  }
+}
+
+rules {
+  // Pattern matching must be exhaustive
+  OptionPatternMatch {
+    forall match: PatternMatch {
+      where subject: Option<T> {
+        must cover Some, None
+      }
+    }
+  }
+
+  // Type preservation in map
+  MapTypePreservation {
+    forall map: OptionOperations.map {
+      exists result: Option<U> {
+        if input is Some<T> then result is Some<U>
+        if input is None then result is None
+      }
+    }
+  }
+}

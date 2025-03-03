@@ -1,0 +1,135 @@
+// Core Type System for Morphir IR
+// Defines the fundamental types and their relationships
+
+// Name
+def Name {
+  value: String  // The display name, can be any text
+}
+
+// Path
+def Path {
+  segments: List<Name>
+}
+
+// Fully Qualified Name
+def FQName {
+  packagePath: Path,
+  modulePath: Path,
+  localName: Name
+}
+
+// Core type system
+def Type {
+  variant {
+    Variable {
+      name: Name
+    }
+    Reference {
+      fqName: FQName
+      typeArguments: List<Type>
+    }
+    Tuple {
+      elements: List<Type>
+    }
+    Record {
+      fields: List<Field>
+    }
+    ExtensibleRecord {
+      name: Name
+      fields: List<Field>
+    }
+    Function {
+      argumentType: Type
+      returnType: Type
+    }
+    Unit
+  }
+}
+
+// Field
+def Field {
+  name: Name
+  tpe: Type
+}
+
+// Constructor
+def Constructor {
+  name: Name
+  args: List<ConstructorArg>
+}
+
+// ConstructorArg
+def ConstructorArg {
+  name: Name
+  tpe: Type
+}
+
+// Type Definitions
+def TypeDefinition {
+  variant {
+    TypeAlias {
+      typeParams: List<Name>
+      typeExp: Type
+    }
+    CustomType {
+      typeParams: List<Name>
+      constructors: List<Constructor>
+    }
+  }
+}
+
+// Module
+def Module {
+  name: Name,
+  exports: List<Name>,
+  types: Map<Name, TypeDefinition>,
+  values: Map<Name, ValueDefinition>
+}
+
+// Value definition
+def ValueDefinition {
+  valueType: Type
+  body: Value  // Defined in value.fair
+}
+
+rules {
+  // All exported names in a module must be defined in that module's types or values
+  ValidExports {
+    forall mod: Module {
+      forall name in mod.exports {
+        require name in mod.types.keys() or name in mod.values.keys()
+      }
+    }
+  }
+
+  // Type references must point to existing types
+  ValidTypeReferences {
+    forall mod: Module {
+      forall typeDef in mod.types.values() {
+        forall ref: collectTypeReferences(typeDef) {
+          require ref in mod.types.keys()
+        }
+      }
+    }
+  }
+
+  // Recursive types must be part of a strongly connected component
+  ValidRecursiveTypes {
+    forall mod: Module {
+      forall typeDef in mod.types.values() {
+        forall var: collectTypeVariables(typeDef) {
+          require var in mod.types.keys()
+        }
+      }
+    }
+  }
+
+  // Type parameters must be unique within their scope
+  UniqueTypeParams {
+    forall mod: Module {
+      forall typeDef in mod.types.values() {
+        require typeDef.typeParams.distinct()
+      }
+    }
+  }
+}

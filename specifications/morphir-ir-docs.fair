@@ -1,0 +1,94 @@
+// Documentation System for Morphir IR
+// Separates documentation from the IR structure
+
+// Unique identifier for any node in the IR
+def NodePath {
+  // e.g., "company.project/Domain.Customer:CustomerType.constructor.field"
+  value: String
+
+  rules {
+    ValidPath {
+      require value.matches("[^/]+/[^:]+:[^/]+")  // package/module:entity
+    }
+  }
+}
+
+def Documentation {
+  description: String
+  examples: List<Example>
+  since: String        // Version when this was introduced
+  deprecated: Optional<DeprecationInfo>
+}
+
+def Example {
+  description: String
+  code: String
+  output: Optional<String>
+}
+
+def DeprecationInfo {
+  since: String
+  message: String
+  replacedBy: Optional<NodePath>
+}
+
+// Main documentation store
+def DocumentationStore {
+  docs: Map<NodePath, Documentation>
+  
+  rules {
+    // All paths must be valid
+    ValidPaths {
+      forall path in docs.keys() {
+        require isValidNodePath(path)
+      }
+    }
+
+    // Referenced nodes must exist
+    ValidReferences {
+      forall doc in docs.values() {
+        where doc.deprecated?.replacedBy exists {
+          require doc.deprecated.replacedBy in docs.keys()
+        }
+      }
+    }
+  }
+}
+
+// Path construction helpers
+def PathBuilder {
+  // Build a path for a type
+  def typePath {
+    package: Name
+    module: Name
+    typeName: Name
+    returns: NodePath
+  }
+
+  // Build a path for a constructor
+  def constructorPath {
+    package: Name
+    module: Name
+    typeName: Name
+    constructorName: Name
+    returns: NodePath
+  }
+
+  // Build a path for a field
+  def fieldPath {
+    package: Name
+    module: Name
+    typeName: Name
+    constructorName: Optional<Name>  // None for record fields
+    fieldName: Name
+    returns: NodePath
+  }
+
+  // Build a path for a value
+  def valuePath {
+    package: Name
+    module: Name
+    valueName: Name
+    returns: NodePath
+  }
+}

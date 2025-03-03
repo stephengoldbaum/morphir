@@ -1,0 +1,362 @@
+// Core Type System for Morphir IR
+// Defines the fundamental types and their relationships
+
+// Name normalization rules
+def NameNormalization {
+  // Normalization steps in order of application
+  steps: [
+    // 1. Unicode normalization (NFKD)
+    UnicodeNormalize {
+      // Convert accented characters to base + combining mark
+      // é -> e, ñ -> n, etc.
+      form: "NFKD"
+    }
+
+    // 2. Case conversion rules
+    CaseConversion {
+      variant {
+        // For display names: preserve case
+        DisplayCase {
+          // Only normalize whitespace
+          preserveCase: true
+        }
+        // For raw names: apply camelCase
+        RawCase {
+          // Capitalize after spaces and special chars
+          // "foo bar" -> "fooBar"
+          // "foo-bar" -> "fooBar"
+          capitalizeAfterDelimiter: true
+          preserveAcronyms: true  // "USD" stays "USD"
+        }
+      }
+    }
+
+    // 3. Character substitutions
+    Substitutions {
+      // Common substitutions for special characters
+      rules: [
+        ["&", "And"],
+        ["+", "Plus"],
+        ["-", "_dash_"],
+        ["/", "_slash_"], 
+        ["$", "USD"],
+        ["€", "EUR"],
+        ["£", "GBP"]
+      ]
+    }
+
+    // 4. Word transformations
+    WordTransforms {
+      // Common business term standardizations
+      rules: [
+        ["account", "Account"],
+        ["number", "Number"],
+        ["id", "ID"],
+        ["identifier", "ID"],
+        ["amount", "Amount"],
+        ["balance", "Balance"],
+        ["currency", "Currency"]
+      ]
+    }
+  ]
+
+  rules {
+    // Normalization must be idempotent
+    Idempotent {
+      forall name: String {
+        require normalize(normalize(name)) == normalize(name)
+      }
+    }
+
+    // Normalization must preserve acronyms
+    PreserveAcronyms {
+      forall name: String {
+        where isAcronym(name) {
+          require normalize(name) == name
+        }
+      }
+    }
+
+    // Raw names must be valid identifiers
+    ValidIdentifier {
+      forall name: String {
+        require normalize(name).matches("[a-zA-Z][a-zA-Z0-9]*")
+      }
+    }
+
+    // Normalization must be reversible for round-trip
+    Reversible {
+      forall name: String {
+        exists denormalized: String {
+          require normalize(denormalized) == normalize(name)
+        }
+      }
+    }
+  }
+
+  // Examples of normalization
+  examples: [
+    // Basic cases
+    Example {
+      input: "Customer Account"
+      normalized: "CustomerAccount"
+    }
+    // Special characters
+    Example {
+      input: "USD/EUR Exchange Rate"
+      normalized: "USDEURExchangeRate"
+    }
+    // Accented characters
+    Example {
+      input: "Crédit Agricole"
+      normalized: "CreditAgricole"
+    }
+    // Business terms
+    Example {
+      input: "Customer ID Number"
+      normalized: "CustomerIDNumber"
+    }
+    // Mixed case with acronyms
+    Example {
+      input: "IBM Cloud Service"
+      normalized: "IBMCloudService"
+    }
+  ]
+}
+
+// Names and References
+def Name {
+  value: String      // Business terms like "Customer Account Balance"
+  rawValue: String   // Normalized form for references: "CustomerAccountBalance"
+
+  rules {
+    // Allow spaces, accents, and common punctuation in display names
+    ValidDisplayName {
+      require value.matches("[\\p{L}\\p{N}\\s'\",.&+/$€£-]+")
+    }
+
+    // Ensure raw value is a valid identifier
+    ValidRawName {
+      require rawValue.matches("[a-zA-Z][a-zA-Z0-9]*")
+    }
+
+    // Raw value must be the normalized form of the display name
+    ConsistentNames {
+      require rawValue == normalize(value)
+    }
+  }
+}
+
+// Path
+def Path {
+  segments: List<Name>  // Hierarchical path: ["Trade Finance", "Letter of Credit"]
+
+  rules {
+    ValidPath {
+      require segments.length > 0
+    }
+  }
+}
+
+// FQName
+def FQName {
+  packagePath: Path    // ["morgan stanley", "trade"]
+  modulePath: Path     // ["Trade Finance", "Letter of Credit"]
+  localName: Name      // "Beneficiary Bank"
+
+  rules {
+    // Package names can be lowercase with spaces
+    ValidPackagePath {
+      forall name in packagePath.segments {
+        require name.value.matches("[\\p{Ll}\\p{N}\\s-]+")
+      }
+    }
+  }
+}
+
+// Core type system
+def Type {
+  variant {
+    Variable {
+      name: Name
+    }
+    Reference {
+      fqName: FQName
+      typeArguments: List<Type>
+    }
+    Tuple {
+      elements: List<Type>
+    }
+    Record {
+      fields: List<Field>
+    }
+    ExtensibleRecord {
+      name: Name
+      fields: List<Field>
+    }
+    Function {
+      argumentType: Type
+      returnType: Type
+    }
+    Unit
+  }
+}
+
+// Field
+def Field {
+  name: Name
+  tpe: Type
+}
+
+// Constructor
+def Constructor {
+  name: Name
+  args: List<ConstructorArg>
+}
+
+// ConstructorArg
+def ConstructorArg {
+  name: Name
+  tpe: Type
+}
+
+// Type Specifications - Public Interface
+def Specification {
+  variant {
+    TypeAlias {
+      typeParams: List<Name>
+      typeExp: Type
+    }
+    OpaqueType {
+      typeParams: List<Name>
+    }
+    CustomType {
+      typeParams: List<Name>
+      constructors: List<Constructor>
+    }
+  }
+
+  rules {
+    UniqueTypeParams {
+      forall spec: Specification {
+        require spec.typeParams.distinct()
+      }
+    }
+    
+    ValidTypeParams {
+      forall spec: TypeAlias {
+        forall var: collectTypeVariables(spec.typeExp) {
+          require var in spec.typeParams
+        }
+      }
+    }
+
+    UniqueConstructorNames {
+      forall spec: CustomType {
+        require spec.constructors.map(c => c.name).distinct()
+      }
+    }
+  }
+}
+
+// Package Structure
+def Distribution {
+  packages: Map<PackageId, Package>
+}
+
+// PackageId
+def PackageId {
+  path: Path         // ["morgan stanley", "trade"]
+  version: String    // "1.2.3"
+}
+
+// Package
+def Package {
+  modules: Map<Path, Module>     // Key: ["Trade Finance", "Letter of Credit"]
+  dependencies: List<PackageId>
+}
+
+// Module
+def Module {
+  name: Name,
+  exports: List<Name>,
+  types: Map<Name, TypeDefinition>,
+  values: Map<Name, ValueDefinition>
+}
+
+// Type Definitions
+def TypeDefinition {
+  variant {
+    TypeAlias {
+      typeParams: List<Name>
+      typeExp: Type
+    }
+    CustomType {
+      typeParams: List<Name>
+      constructors: List<Constructor>
+    }
+  }
+}
+
+// Value definition
+def ValueDefinition {
+  valueType: Type
+  body: Value  // Defined in value.fair
+}
+
+rules {
+  // Package names must be unique within a distribution
+  UniquePackageIds {
+    forall dist: Distribution {
+      require dist.packages.keys().distinct()
+    }
+  }
+
+  // Module paths must be unique within a package
+  UniqueModulePaths {
+    forall pkg: Package {
+      require pkg.modules.keys().distinct()
+    }
+  }
+
+  // Type names must be unique within a module
+  UniqueTypeNames {
+    forall mod: Module {
+      require mod.types.keys().distinct()
+    }
+  }
+
+  // Value names must be unique within a module
+  UniqueValueNames {
+    forall mod: Module {
+      require mod.values.keys().distinct()
+    }
+  }
+
+  // Dependencies must exist
+  ValidDependencies {
+    forall dist: Distribution {
+      forall pkg: dist.packages.values() {
+        forall dep: pkg.dependencies {
+          require dep in dist.packages.keys()
+        }
+      }
+    }
+  }
+
+  // No circular dependencies
+  NoCircularDependencies {
+    forall dist: Distribution {
+      require not hasCycles(buildDependencyGraph(dist))
+    }
+  }
+
+  // All exported names in a module must be defined in that module's types or values
+  ValidExports {
+    forall mod: Module {
+      forall name in mod.exports {
+        require name in mod.types.keys() or name in mod.values.keys()
+      }
+    }
+  }
+}

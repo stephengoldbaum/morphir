@@ -1,0 +1,102 @@
+# Morphir IR Serialization Specification
+Version: 1.0.0
+
+This specification defines how Morphir IR is serialized for storage and transmission.
+
+## Format Types
+
+### Serialization Format
+```
+SerializationFormat =
+  | Text(prettyPrint: Boolean, includeComments: Boolean)
+  | Binary(compression: CompressionType, version: Int)
+  | Protobuf(version: Int)
+```
+
+### Header
+Every serialized Morphir IR document must include a header.
+```
+SerializationHeader = {
+  version: Int,
+  format: SerializationFormat,
+  timestamp: String,
+  checksum: String
+}
+```
+
+### Compression Type
+Available compression algorithms for binary format.
+```
+CompressionType = None | Gzip | Lz4
+```
+
+## Text Format
+
+### JSON Structure
+When using the text format with JSON:
+1. All names are represented as objects with a "value" field
+2. All variants include a "type" field indicating the variant name
+3. Lists are represented as JSON arrays
+4. Maps are represented as JSON objects with string keys
+
+Example:
+```json
+{
+  "header": {
+    "version": 1,
+    "format": {
+      "type": "Text",
+      "prettyPrint": true,
+      "includeComments": true
+    },
+    "timestamp": "2025-03-02T22:05:40-05:00",
+    "checksum": ""
+  },
+  "content": {
+    "modules": [
+      {
+        "name": { "value": "Types" },
+        "exports": [
+          { "value": "Employee" }
+        ],
+        "types": {
+          "Employee": {
+            "type": "Record",
+            "fields": [
+              {
+                "name": { "value": "id" },
+                "tpe": {
+                  "type": "Reference",
+                  "fqName": {
+                    "packagePath": { "segments": ["HR"] },
+                    "modulePath": { "segments": ["Types"] },
+                    "name": { "value": "EmployeeId" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+## Binary Format
+
+### Layout
+1. Header (fixed size)
+2. Content length (4 bytes)
+3. Content (variable size)
+4. Checksum (32 bytes)
+
+### Compression
+When compression is enabled:
+1. Only the content is compressed
+2. Header and checksum remain uncompressed
+3. Content length refers to uncompressed size
+
+## Protobuf Format
+
+See `morphir.proto` for the Protocol Buffers schema definition.

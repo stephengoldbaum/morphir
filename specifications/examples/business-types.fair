@@ -1,0 +1,169 @@
+// Example business type definitions using Morphir IR
+
+// Trade Finance Examples
+def Module {
+  name: Path { segments: [Name { value: "Trade Finance", rawValue: "TradeFinance" }] }
+  types: {
+    // Letter of Credit type
+    "Letter of Credit": CustomType {
+      typeParams: []
+      constructors: [
+        Constructor {
+          name: Name { value: "Documentary L/C", rawValue: "DocumentaryLC" }
+          args: [
+            ConstructorArg {
+              name: Name { value: "Issuing Bank", rawValue: "IssuingBank" }
+              tpe: Reference {
+                fqName: FQName {
+                  packagePath: Path { segments: [Name { value: "finance", rawValue: "finance" }] }
+                  modulePath: Path { segments: [Name { value: "Banking", rawValue: "Banking" }] }
+                  localName: Name { value: "Bank", rawValue: "Bank" }
+                }
+                typeArguments: []
+              }
+            },
+            ConstructorArg {
+              name: Name { value: "Amount/Currency", rawValue: "AmountCurrency" }
+              tpe: Reference {
+                fqName: FQName {
+                  packagePath: Path { segments: [Name { value: "finance", rawValue: "finance" }] }
+                  modulePath: Path { segments: [Name { value: "Money", rawValue: "Money" }] }
+                  localName: Name { value: "Money Amount", rawValue: "MoneyAmount" }
+                }
+                typeArguments: []
+              }
+            }
+          ]
+        }
+      ]
+      access: Public
+    }
+  }
+  access: Public
+}
+
+// Risk Management Examples
+def Module {
+  name: Path { segments: [Name { value: "Risk Management", rawValue: "RiskManagement" }] }
+  types: {
+    // Credit Rating type
+    "Credit Rating": CustomType {
+      typeParams: []
+      constructors: [
+        Constructor {
+          name: Name { value: "S&P Rating", rawValue: "SAndPRating" }
+          args: [
+            ConstructorArg {
+              name: Name { value: "Rating Grade", rawValue: "RatingGrade" }
+              tpe: Reference {
+                fqName: FQName {
+                  packagePath: Path { segments: [Name { value: "risk", rawValue: "risk" }] }
+                  modulePath: Path { segments: [Name { value: "Ratings", rawValue: "Ratings" }] }
+                  localName: Name { value: "Grade", rawValue: "Grade" }
+                }
+                typeArguments: []
+              }
+            }
+          ]
+        }
+      ]
+      access: Public
+    },
+
+    // Risk Exposure type
+    "Risk Exposure": Record {
+      fields: [
+        Field {
+          name: Name { value: "Counterparty", rawValue: "Counterparty" }
+          tpe: Reference {
+            fqName: FQName {
+              packagePath: Path { segments: [Name { value: "risk", rawValue: "risk" }] }
+              modulePath: Path { segments: [Name { value: "Entity", rawValue: "Entity" }] }
+              localName: Name { value: "Legal Entity", rawValue: "LegalEntity" }
+            }
+            typeArguments: []
+          }
+        },
+        Field {
+          name: Name { value: "Max Exposure", rawValue: "MaxExposure" }
+          tpe: Reference {
+            fqName: FQName {
+              packagePath: Path { segments: [Name { value: "finance", rawValue: "finance" }] }
+              modulePath: Path { segments: [Name { value: "Money", rawValue: "Money" }] }
+              localName: Name { value: "Money Amount", rawValue: "MoneyAmount" }
+            }
+            typeArguments: []
+          }
+        }
+      ]
+    }
+  }
+  access: Public
+}
+
+// Portfolio Management Examples
+def Module {
+  name: Path { segments: [Name { value: "Portfolio Management", rawValue: "PortfolioManagement" }] }
+  types: {
+    // Investment Strategy type
+    "Investment Strategy": CustomType {
+      typeParams: [Name { value: "Asset Class", rawValue: "AssetClass" }]
+      constructors: [
+        Constructor {
+          name: Name { value: "Buy & Hold", rawValue: "BuyAndHold" }
+          args: [
+            ConstructorArg {
+              name: Name { value: "Min Hold Period", rawValue: "MinHoldPeriod" }
+              tpe: Reference {
+                fqName: FQName {
+                  packagePath: Path { segments: [Name { value: "time", rawValue: "time" }] }
+                  modulePath: Path { segments: [Name { value: "Duration", rawValue: "Duration" }] }
+                  localName: Name { value: "Period", rawValue: "Period" }
+                }
+                typeArguments: []
+              }
+            }
+          ]
+        },
+        Constructor {
+          name: Name { value: "Active Trading", rawValue: "ActiveTrading" }
+          args: [
+            ConstructorArg {
+              name: Name { value: "Max Position Size", rawValue: "MaxPositionSize" }
+              tpe: Variable {
+                name: Name { value: "Asset Class", rawValue: "AssetClass" }
+              }
+            }
+          ]
+        }
+      ]
+      access: Public
+    }
+  }
+  access: Public
+}
+
+// Market Data Examples
+def Module {
+  name: Path { segments: [Name { value: "Market Data", rawValue: "MarketData" }] }
+  types: {
+    // Price Quote type
+    "Price Quote": ExtensibleRecord {
+      name: Name { value: "Quote Base", rawValue: "QuoteBase" }
+      fields: [
+        Field {
+          name: Name { value: "Bid/Ask Spread", rawValue: "BidAskSpread" }
+          tpe: Reference {
+            fqName: FQName {
+              packagePath: Path { segments: [Name { value: "finance", rawValue: "finance" }] }
+              modulePath: Path { segments: [Name { value: "Pricing", rawValue: "Pricing" }] }
+              localName: Name { value: "Spread", rawValue: "Spread" }
+            }
+            typeArguments: []
+          }
+        }
+      ]
+    }
+  }
+  access: Public
+}
